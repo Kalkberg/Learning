@@ -1,0 +1,5 @@
+cookie = 0 #number of loops completed
+loop = 10 #Number of loops to execute
+for i in range(loop):
+    cookie = cookie + 1
+print('You have',cookie, 'cookies!')
