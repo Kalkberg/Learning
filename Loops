@@ -1,4 +1,4 @@
-cookie = 0 #number of loops completed
+cookie = 0 #Number of loops completed
 loop = 10 #Number of loops to execute
 for i in range(loop):
     cookie = cookie + 1
