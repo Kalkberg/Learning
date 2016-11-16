@@ -24,23 +24,22 @@ def error():
     print("SAT is set to either ENVI or ERS, and notes data type to be extracted")
     sys.exit()
 
-# Check number of arguments, if not two, return error
+# Check number of arguments and import, if not two, return error
 if len(sys.argv)==3:
+    # Import directory to work on and satellite type from input arguments
+    workdir=sys.argv[1]
+    SAT=sys.argv[2]
     print("Current working directory is set to %s" % workdir)
     print("Data type set to %s" % SAT)
 else:
     print("Error: Wrong number of input arguments!")
     error()
      
-# Import directory to work on and satellite type from input arguments
-workdir=sys.argv[1]
-SAT=sys.argv[2]
-
 # Move to working directory and read off file list to be worked on
 os.chdir('/') # move to root
 os.chdir(workdir)
 if SAT == 'ERS':
-    files=glob.glob('*.gz.tar') # ERS archives end in .gz.tar
+    files=glob.glob('*.tar.gz') # ERS archives end in .gz.tar
 elif SAT == 'ENVI':
     files=glob.glob('*.N1') # ENVI archives end in .N1
 else: #Terminate program due to wrong input arguments
