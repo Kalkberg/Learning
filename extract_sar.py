@@ -19,14 +19,10 @@ import sys
 # Create function describing usage and terminating program for errors
 def error():
     print("Usage: python3 extract_sar.py working_dir SAT")
-    print("Where working_dir is the location of the image files to be extracted")
+    print("Where working_dir is the full path to the image files to be extracted")
     print("e.g. /home/user/InSAR")
     print("SAT is set to either ENVI or ERS, and notes data type to be extracted")
     sys.exit()
-
-# Import directory to work on and satellite type from input arguments
-workdir=sys.argv[1]
-SAT=sys.argv[2]
 
 # Check number of arguments, if not two, return error
 if len(sys.argv)==3:
@@ -35,6 +31,10 @@ if len(sys.argv)==3:
 else:
     print("Error: Wrong number of input arguments!")
     error()
+     
+# Import directory to work on and satellite type from input arguments
+workdir=sys.argv[1]
+SAT=sys.argv[2]
 
 # Move to working directory and read off file list to be worked on
 os.chdir('/') # move to root
