@@ -62,6 +62,8 @@ if SAT == 'ERS': # extract and rename files for ERS sat
         shutil.copyfile('LEA_01.001', str(orbit)+'.ldr')
         os.rename('DAT_01.001', 'DAT_'+str(orbit)+'.001') # rename extracted files to include orbit number
         os.rename('LEA_01.001', 'LEA_'+str(orbit)+'.001')
+        os.remove('NUL_DAT.001') # remove superfluous files
+        os.remove('VDF_DAT.001')
 else: # copy and rename files for ENVI sat
     for i in range(len(files)):
         print("Working on ENVI image %d out of %d..." % (i+1, len(files)))
