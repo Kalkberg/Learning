@@ -23,6 +23,7 @@ $RECYCLE.BIN/
 *.png
 *.kml
 *.csv
+*.kmz
 
 # =========================
 # Operating System Files
