@@ -4,7 +4,15 @@ Code for ingesting moment tensor solutions and generating KMZ files with
 "beachball" diagrams at epicenter locations, colored by depth and sized by
 magnitude
 
-@author: pyakovlev
+Currently configured to plot data from the Montana Regional Seismic Network,
+which is hosted by the Montana Bureau of Mines and Geology.
+
+Note that size formula for magnitude legend on line 98 needs to be rejiggered 
+for data with different maximum and minimum magnitudes.
+
+Written by Petr Yakovlev in 2016.
+
+@author: Kalkberg
 """
 # Import needed modules
 import os
@@ -22,12 +30,12 @@ from obspy.imaging.beachball import beachball
 
 # Create function describing usage and terminating program for errors
 def error():
-    print("Usage: python3 beachball.py working_dir data.csv output.kmz")
+    print("Usage: python3 beachball.py working_dir data.csv Output")
     print("Where working_dir is the full path to the data")
     print("e.g. C:/users/beachball")
     print("data.csv contains comma delimited files of long, lat, depth, \
     magnitude, strke, dip, rake and date")
-    print("output.kmz is the name of the kmz file to generate from data")
+    print("Output is the name of the kmz file and document to generate from data")
     sys.exit()
 
 # Check number of arguments and import, if not three, return error
@@ -45,7 +53,7 @@ else:
 
 # Move to working directory and create a bin for beachballs
 os.chdir(workdir)
-os.mkdir('ballbin')
+os.mkdir('Ballbin')
 
 # Read in data, cut out headers and redistribute
 data = genfromtxt(data, delimiter=',')
@@ -60,13 +68,18 @@ print("Making beach balls...")
 jet = plt.get_cmap('jet')    
     
 # Toss balls in ballbin, i.e. create png files of moment tensors for kmz
-os.chdir('ballbin')
+os.chdir('Ballbin')
 for i in range(0,data.shape[0]):
     ball = beachball([strike[i], dip[i], rake[i]], 
                      size=1000*(magnitude[i]/magnitude.max()), linewidth=2, 
                      facecolor=jet(depth[i]/depth.max()), outfile='%s.png' % i)
     plt.close()
 
+# Make directory for legends
+os.chdir('..')
+os.mkdir('Legends')    
+os.chdir('Legends')
+    
 # Create a plot showing depth color bar aka legend 1
 a = outer(arange(0,1,0.01),ones(10))
 legend1, ax1 = plt.subplots()
@@ -84,7 +97,7 @@ plt.close()
 circley = arange(np.rint(magnitude.min()), np.rint(magnitude.max()), 1)
 circlex = ones(circley.size)
 legend2, ax2 = plt.subplots()
-ax2.scatter(circlex, circley,s=(45+22*circley*circley), 
+ax2.scatter(circlex, circley,s=(45+20*circley*circley), 
             facecolor='None', edgecolor='k', linewidth=1) # Size formula scaled to GE
 ax2.axes.get_xaxis().set_visible(False)
 ax2.set_ylabel('Magnitude', fontsize=12)
@@ -95,7 +108,8 @@ ax2.spines['right'].set_visible(False)
 ax2.spines['bottom'].set_visible(False)
 ax2.spines['left'].set_visible(False)
 ax2.yaxis.set_ticks_position('none')
-pylab.ylim([circley.min()-.5,circley.max()+.5]) # Eliminate extra labels
+ax2.yaxis.set_ticks(np.arange(np.rint(magnitude.min()),np.rint(magnitude.max()),1))
+pylab.ylim([circley.min()-0.5,circley.max()+1]) # leave space for circles at top
 legend2.set_size_inches(.75,1.59)
 legend2.savefig('legend2.png', transparent=False, bbox_inches='tight')
 plt.close()
@@ -106,9 +120,10 @@ print("Making Google Earth Files...")
 # Start writing kml file in root directory
 os.chdir('..')
 kml = open('beachballs.kml','w')
-kml.write('<?xml version="1.0" encoding="UTF-8"?>\n') # header
-kml.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n') # namespan declaration
-kml.write('<Document>\n')
+kml.write('<?xml version="1.0" encoding="UTF-8"?>\n' # header
+          '<kml xmlns="http://www.opengis.net/kml/2.2">\n' # namespan declaration
+          '<Document>\n'
+          '<name>%s Earthquakes</name>' %output)
 
 # Add source info for MBMG and disclaimer
 kml.write('\t<description>Data obtained from the Montana Bureau of Mines and '
@@ -119,47 +134,47 @@ kml.write('\t<description>Data obtained from the Montana Bureau of Mines and '
           'consistency.</description>\n')
 
 # Define region
-kml.write('\t<Region>\n')
-kml.write('\t<LatLonAltBox>\n')
+kml.write('\t<Region>\n'
+          '\t<LatLonAltBox>\n')
 kml.write('\t\t<north>%s</north>\n' %lat.max())
 kml.write('\t\t<south>%s</south>\n' %lat.min())
 kml.write('\t\t<east>%s</east>\n' %long.max())
 kml.write('\t\t<west>%s</west>\n' %long.min())
-kml.write('\t</LatLonAltBox>\n')
-kml.write('\t</Region>\n')
+kml.write('\t</LatLonAltBox>\n'
+          '\t</Region>\n')
 
 # Put MBMG logo at bottom right
-kml.write('\t<ScreenOverlay>\n')
-kml.write('\t\t<Icon>\n')
-kml.write('\t\t\t<href>http://mbmg.mtech.edu/graphics/logombmg.png</href>\n')
-kml.write('\t\t</Icon>\n')
-kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<screenXY x=".85" y=".2" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<size x=".15" y=".1" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t</ScreenOverlay>\n')
+kml.write('\t<ScreenOverlay>\n'
+          '\t\t<Icon>\n'
+          '\t\t\t<href>http://mbmg.mtech.edu/graphics/logombmg.png</href>\n'
+          '\t\t</Icon>\n'
+          '\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<screenXY x=".85" y=".2" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<size x=".15" y=".1" xunits="fraction" yunits="fraction"/>\n'
+          '\t</ScreenOverlay>\n')
 
 # Plot legend 1, depth color bar
-kml.write('\t<ScreenOverlay>\n')
-kml.write('\t\t<Icon>\n')
-kml.write('\t\t\t<href>legend1.png</href>\n')
-kml.write('\t\t</Icon>\n')
-kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t</ScreenOverlay>\n')
+kml.write('\t<ScreenOverlay>\n'
+          '\t\t<Icon>\n'
+          '\t\t\t<href>Legends/legend1.png</href>\n'
+          '\t\t</Icon>\n'
+          '\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n'
+          '\t</ScreenOverlay>\n')
 
 # Plot legend 2, magnitude size
-kml.write('\t<ScreenOverlay>\n')
-kml.write('\t\t<Icon>\n')
-kml.write('\t\t\t<href>legend2.png</href>\n')
-kml.write('\t\t</Icon>\n')
-kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<screenXY x="88" y="1" xunits="pixels" yunits="fraction"/>\n')
-kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
-kml.write('\t</ScreenOverlay>\n')
+kml.write('\t<ScreenOverlay>\n'
+          '\t\t<Icon>\n'
+          '\t\t\t<href>Legends/legend2.png</href>\n'
+          '\t\t</Icon>\n'
+          '\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<screenXY x="88" y="1" xunits="pixels" yunits="fraction"/>\n'
+          '\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n'
+          '\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n'
+          '\t</ScreenOverlay>\n')
 
 # Gnerate icon styles for each beachball
 for i in range(0,data.shape[0]):
@@ -168,7 +183,7 @@ for i in range(0,data.shape[0]):
     kml.write('\t\t\t<heading>.00001</heading>\n')
     kml.write('\t\t\t<scale>%s</scale>\n' %(.3+magnitude[i]/magnitude.max()))
     kml.write('\t\t\t<Icon>\n')
-    kml.write('\t\t\t\t<href>%s.png</href>\n' %i)
+    kml.write('\t\t\t\t<href>Ballbin/%s.png</href>\n' %i)
     kml.write('\t\t\t</Icon>\n')
     kml.write('\t\t\t</IconStyle>\n')
     kml.write('\t</Style>\n')
@@ -189,14 +204,20 @@ for i in range(0,data.shape[0]):
     kml.write('\t</Placemark>\n')
 
 # End KML file
-kml.write('</Document>/n')
-kml.write('</kml>')
+kml.write('</Document>/n'
+          '</kml>')
 kml.close()
 
 # Create kmz file
-shutil.make_archive(output, 'zip', 'ballbin')
-os.rename(output+'.zip',output) # shutil appends ".zip" to all files
-z =  zipfile.ZipFile(output, 'a')
+z = zipfile.ZipFile(output+'.kmz', 'w', zipfile.ZIP_DEFLATED)
+for dirname, subdirs, files in os.walk('Ballbin'):
+    z.write(dirname)
+    for filename in files:
+        z.write(os.path.join(dirname, filename))
+for dirname, subdirs, files in os.walk('Legends'):
+    z.write(dirname)
+    for filename in files:
+        z.write(os.path.join(dirname, filename))
 z.write('beachballs.kml')
 z.close()
 
@@ -204,7 +225,8 @@ z.close()
 print("Cleaning up...")
 
 # Delete temporary files
-shutil.rmtree('ballbin')
+shutil.rmtree('Ballbin')
+shutil.rmtree('Legends')
 os.remove('beachballs.kml')
 
 # Echo progress
