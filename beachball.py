@@ -84,7 +84,7 @@ plt.close()
 circley = arange(np.rint(magnitude.min()), np.rint(magnitude.max()), 1)
 circlex = ones(circley.size)
 legend2, ax2 = plt.subplots()
-ax2.scatter(circlex, circley,s=(55+25*circley*circley), 
+ax2.scatter(circlex, circley,s=(45+22*circley*circley), 
             facecolor='None', edgecolor='k', linewidth=1) # Size formula scaled to GE
 ax2.axes.get_xaxis().set_visible(False)
 ax2.set_ylabel('Magnitude', fontsize=12)
@@ -110,6 +110,14 @@ kml.write('<?xml version="1.0" encoding="UTF-8"?>\n') # header
 kml.write('<kml xmlns="http://www.opengis.net/kml/2.2">\n') # namespan declaration
 kml.write('<Document>\n')
 
+# Add source info for MBMG and disclaimer
+kml.write('\t<description>Data obtained from the Montana Bureau of Mines and '
+          'Geology. '
+          'Data sourced by the Montana Regional Seismic Network (MRSN). '
+          'Disclaimer: These fault plane solutions should be considered'
+          'preliminary and have not been reviewed for completeness or' 
+          'consistency.</description>\n')
+
 # Define region
 kml.write('\t<Region>\n')
 kml.write('\t<LatLonAltBox>\n')
@@ -120,26 +128,37 @@ kml.write('\t\t<west>%s</west>\n' %long.min())
 kml.write('\t</LatLonAltBox>\n')
 kml.write('\t</Region>\n')
 
+# Put MBMG logo at bottom right
+kml.write('\t<ScreenOverlay>\n')
+kml.write('\t\t<Icon>\n')
+kml.write('\t\t\t<href>http://mbmg.mtech.edu/graphics/logombmg.png</href>\n')
+kml.write('\t\t</Icon>\n')
+kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<screenXY x=".85" y=".2" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<size x=".15" y=".1" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t</ScreenOverlay>\n')
+
 # Plot legend 1, depth color bar
 kml.write('\t<ScreenOverlay>\n')
 kml.write('\t\t<Icon>\n')
-kml.write('\t\t\t<href>legend1.png</href>')
+kml.write('\t\t\t<href>legend1.png</href>\n')
 kml.write('\t\t</Icon>\n')
-kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>')
-kml.write('\t\t<screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>')
-kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>')
-kml.write('\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>')
+kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
 kml.write('\t</ScreenOverlay>\n')
 
 # Plot legend 2, magnitude size
 kml.write('\t<ScreenOverlay>\n')
 kml.write('\t\t<Icon>\n')
-kml.write('\t\t\t<href>legend2.png</href>')
+kml.write('\t\t\t<href>legend2.png</href>\n')
 kml.write('\t\t</Icon>\n')
-kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>')
-kml.write('\t\t<screenXY x="88" y="1" xunits="pixels" yunits="fraction"/>')
-kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>')
-kml.write('\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>')
+kml.write('\t\t<overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<screenXY x="88" y="1" xunits="pixels" yunits="fraction"/>\n')
+kml.write('\t\t<rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
+kml.write('\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n')
 kml.write('\t</ScreenOverlay>\n')
 
 # Gnerate icon styles for each beachball
@@ -157,7 +176,11 @@ for i in range(0,data.shape[0]):
 # Write placemarks
 for i in range(0,data.shape[0]):
     kml.write('\t<Placemark>\n')
-    kml.write('\t\t<description>YrMoDy = %s<br/>Depth = %s km<br/>Magnitude = %s </description>\n' 
+    kml.write('\t\t<description>YrMoDy = %s<br/>Depth = %s km<br/>'
+              'Magnitude = %s <br/>'
+              'Disclaimer: These fault plane solutions should be considered '
+              'preliminary and have not been reviewed for completeness or ' 
+              'consistency.</description>\n'
               %(date[i].astype(int), depth[i], magnitude[i]))
     kml.write('\t\t<styleUrl>#%s</styleUrl>\n' %i)
     kml.write('\t\t<Point>\n')
