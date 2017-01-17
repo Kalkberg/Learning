@@ -23,6 +23,7 @@ import shutil
 import zipfile 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from obspy.imaging.beachball import beachball
 
 # Create function describing usage and terminating program for errors
@@ -61,15 +62,35 @@ long, lat, depth, magnitude, strike, dip, rake, date = data[:,0], data[:,1], \
 # Echo progress
 print("Making beach balls...")    
     
-# Import jet color bar to color by depth
-jet = plt.get_cmap('jet')    
+# Create custom color bar based on range of magnitudes in data set
+def Make_Colormap(seq):
+    seq = [(None,) * 3, 0.0] + list(seq) + [1.0, (None,) * 3]
+    cdict = {'red': [], 'green': [], 'blue': []}
+    for i, item in enumerate(seq):
+        if isinstance(item, float):
+            r1, g1, b1 = seq[i - 1]
+            r2, g2, b2 = seq[i + 1]
+            cdict['red'].append([item, r1, r2])
+            cdict['green'].append([item, g1, g2])
+            cdict['blue'].append([item, b1, b2])
+    return mcolors.LinearSegmentedColormap('CustomMap', cdict)
     
+c = mcolors.ColorConverter().to_rgb
+ColorMap = Make_Colormap(
+    [(0.0, 0.0, 1.0), c('cyan'), 
+     (np.median(magnitude)-2*magnitude.std())/magnitude.max(), 
+     c('cyan'), (0.2, 0.6, 0.2), 
+     (np.median(magnitude)/magnitude.max()),
+     (0.2, 0.6, 0.2), c('yellow'),
+     (np.median(magnitude)+2*magnitude.std())/magnitude.max(),
+     c('yellow'),(1.0, 0.0, 0.0)])
+
 # Toss balls in ballbin, i.e. create png files of moment tensors for kmz
 os.chdir('Ballbin')
 for i in range(0,data.shape[0]):
     ball = beachball([strike[i], dip[i], rake[i]], 
                      size=1000, linewidth=2, 
-                     facecolor=jet(depth[i]/depth.max()), outfile='%s.png' % i)
+                     facecolor=ColorMap(depth[i]/depth.max()), outfile='%s.png' % i)
     plt.close()
 
 # Make directory for legends
@@ -80,7 +101,7 @@ os.chdir('Legends')
 # Create a plot showing depth color bar aka legend 1
 a = np.outer(np.arange(0,1,0.01),np.ones(10))
 legend1, ax1 = plt.subplots()
-ax1.imshow(a,cmap='jet', origin='lower', extent=[0,1,0,depth.max()], \
+ax1.imshow(a,cmap=ColorMap, origin='lower', extent=[0,1,0,depth.max()], \
                                                  aspect=6/depth.max())
 ax1.axes.get_xaxis().set_visible(False)
 ax1.set_ylabel('Depth (km)', fontsize=12)
