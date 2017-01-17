@@ -5,7 +5,8 @@ Code for ingesting moment tensor solutions and generating KMZ files with
 magnitude
 
 Currently configured to plot data from the Montana Regional Seismic Network,
-which is hosted by the Montana Bureau of Mines and Geology.
+which is operated by the Montana Bureau of Mines and Geology. Edit lines 128-
+134, 147-156, and 195-200 to make it fit for your personal data set. 
 
 Note that size formula for magnitude legend on line 98 needs to be rejiggered 
 for data with different maximum and minimum magnitudes.
@@ -22,10 +23,6 @@ import shutil
 import zipfile 
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy import genfromtxt
-from numpy import outer
-from numpy import arange
-from numpy import ones
 from obspy.imaging.beachball import beachball
 
 # Create function describing usage and terminating program for errors
@@ -56,7 +53,7 @@ os.chdir(workdir)
 os.mkdir('Ballbin')
 
 # Read in data, cut out headers and redistribute
-data = genfromtxt(data, delimiter=',')
+data = np.genfromtxt(data, delimiter=',')
 data = np.delete(data, (0), axis=0)
 long, lat, depth, magnitude, strike, dip, rake, date = data[:,0], data[:,1], \
     data[:,2], data[:,3], data[:,4], data[:,5], data[:,6], data[:,7]
@@ -71,7 +68,7 @@ jet = plt.get_cmap('jet')
 os.chdir('Ballbin')
 for i in range(0,data.shape[0]):
     ball = beachball([strike[i], dip[i], rake[i]], 
-                     size=1000*(magnitude[i]/magnitude.max()), linewidth=2, 
+                     size=1000, linewidth=2, 
                      facecolor=jet(depth[i]/depth.max()), outfile='%s.png' % i)
     plt.close()
 
@@ -81,7 +78,7 @@ os.mkdir('Legends')
 os.chdir('Legends')
     
 # Create a plot showing depth color bar aka legend 1
-a = outer(arange(0,1,0.01),ones(10))
+a = np.outer(np.arange(0,1,0.01),np.ones(10))
 legend1, ax1 = plt.subplots()
 ax1.imshow(a,cmap='jet', origin='lower', extent=[0,1,0,depth.max()], \
                                                  aspect=6/depth.max())
@@ -90,12 +87,12 @@ ax1.set_ylabel('Depth (km)', fontsize=12)
 ax1.locator_params(nbins=6)
 ax1.tick_params(axis='y', which='major', labelsize=10)
 legend1.set_size_inches(4,1.5)
-legend1.savefig('legend1.png', transparent=False, bbox_inches='tight')
+legend1.savefig('legend1.png', dpi=100, transparent=False, bbox_inches='tight')
 plt.close()
 
 # Create a plot showing different beachball sizes aka legend 2
-circley = arange(np.rint(magnitude.min()), np.rint(magnitude.max()), 1)
-circlex = ones(circley.size)
+circley = np.arange(np.rint(magnitude.min()), np.rint(magnitude.max()), 1)
+circlex = np.ones(circley.size)
 legend2, ax2 = plt.subplots()
 ax2.scatter(circlex, circley,s=(45+20*circley*circley), 
             facecolor='None', edgecolor='k', linewidth=1) # Size formula scaled to GE
@@ -111,7 +108,7 @@ ax2.yaxis.set_ticks_position('none')
 ax2.yaxis.set_ticks(np.arange(np.rint(magnitude.min()),np.rint(magnitude.max()),1))
 pylab.ylim([circley.min()-0.5,circley.max()+1]) # leave space for circles at top
 legend2.set_size_inches(.75,1.59)
-legend2.savefig('legend2.png', transparent=False, bbox_inches='tight')
+legend2.savefig('legend2.png', dpi=100, transparent=False, bbox_inches='tight')
 plt.close()
 
 # Echo progress
