@@ -9,6 +9,8 @@ ColorRamp.py - Learned how to make custom color ramps. Code mainly sourced from 
 
 extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and renames files for use in WIN5SAR.
 
+MIT_6189* - *Scripts written while working through MIT's open courseware for course 6.189 - A gentle introduction to Python
+
 MomentTensor - Convert strike, dip, and rake to harvard moment tensor solution. Not working.
 
 pdf_writer.py - Learned how to make a table from a bunch of data in LaTeX and ouput it to a PDF.
