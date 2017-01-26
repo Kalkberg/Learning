@@ -31,8 +31,8 @@ def error():
     print("Usage: python3 beachball.py working_dir data.csv Output")
     print("Where working_dir is the full path to the data")
     print("e.g. C:/users/beachball")
-    print("data.csv contains comma delimited files of long, lat, depth, \
-    magnitude, strke, dip, rake and date")
+    print("data.csv contains comma delimited files of long, lat, depth,",
+    " magnitude, strke, dip, rake and date")
     print("Output is the name of the kmz file and document to generate from data")
     sys.exit()
 

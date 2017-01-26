@@ -13,5 +13,7 @@ pdf_writer.py - Learned how to make a table from a bunch of data in LaTeX and ou
 
 plotting.py - Learned how to make and save basic plots to PDF format.
 
+Plot_Anim.py - Takes a csv of age, lat, and long data and makes an animation with a geographic basemap.
+
 PTBAxes - obtain P, T, and B axes orientations from strike, dip and rake data.
 
