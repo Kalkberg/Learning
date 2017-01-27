@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import sys
 import os
+import shutil
+import subprocess
 from mpl_toolkits.basemap import Basemap
 
 
@@ -40,28 +42,30 @@ from mpl_toolkits.basemap import Basemap
 #    print("Error: Wrong number of input arguments!")
 #    error()
 #    
-## Move to working directory
-#os.chdir(workdir)
 #
-# Input paramaters for debuging
+
+#Input paramaters for debuging
 data = 'NAM_Ig3.csv'
 output = 'NAM_Ig_Hex'
+ffmpeg = 'C:/FFMPEG/bin/'
+workdir = 'D:/GitHub/Learning/'
+
+# Move to working directory
+os.chdir(workdir)
+
+
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
 data = np.delete(data, (0), axis=0)
 age, lat, long = data[:,0], data[:,1], data[:,2]
 
-# Dummy Data
-#size = 300
-#lat = np.random.uniform(34,48,size)
-#long = np.random.uniform(-117,-124,size)
-#age = np.random.uniform(1,100,size)
-
+# Move to ffmpeg directory
+os.chdir(ffmpeg)
 
 # Parameter that affects length of animation
-p = 6 # Controlls length of animation
-plt_int = 5 # Controlls how long to keep on plot
+step = 1 # Controlls length of animation
+plt_int = 5 # Controlls how long to keep points on plot
 
 # Set up figure and projection
 fig = plt.figure()
@@ -74,21 +78,44 @@ m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
 x, y = m(long, lat)
 
 # Make contour plot of the entire interval to get its colorbar
-cp1 = m.contour(x,y)
-cb = fig.colorbar(cp1, ax=ax)
+hb1 = m.hexbin(x,y, gridsize=(100,100), mincnt=1)
+cb = fig.colorbar(hb1, ax=ax)
 cb.set_label('counts')
-#plt.cla() # Clear axes gets rid of everything except color bar
+plt.cla() # Clear axes gets rid of everything except color bar
 
-#Redraw the base map
-m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
-            llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
-m.drawcoastlines(linewidth=0.5)
-m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
-m.drawstates(linewidth=0.5, linestyle='solid', color='k')
-m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
-m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
-m.drawmapboundary(fill_color='white')
-plt.title('Western US Igneous Activity')
+for i in range(0,int(age.max()),step):        
+    #Redraw the base map
+    m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
+                llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
+    m.drawcoastlines(linewidth=0.5)
+    m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
+    m.drawstates(linewidth=0.5, linestyle='solid', color='k')
+    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
+    m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
+    m.drawmapboundary(fill_color='white')
+    plt.title('Western US Igneous Activity')
+    
+    # Make hexplot for this time interval
+    x_plot = np.array([x[j] for j in range(0,len(age)) \
+        if (age[j] < i + plt_int and age[j] > i)])
+    y_plot = np.array([y[j] for j in range(0,len(age)) \
+        if (age[j] < i + plt_int and age[j] > i)])
+    hb_plot = m.hexbin(x_plot,y_plot, gridsize=(100,100), mincnt=1)
+      
+    # Save plot to name padded to five digits and save everything
+    fig.savefig('Frame'+str(i).zfill(5)+'.png')
+    plt.cla()
+    
+#Run FFmpeg
+subprocess.Popen(['ffmpeg -f image2 -r 1/2 -i Frame%05d.png -vcodec mpeg4 -y '+output+'movie.mp4'
+                  ]).wait()
+
+# Clean up
+#for j in range(0,int(age.max()),step):
+#    os.remove('Frame'+str(j).zfill(5)+'.png')
+
+#shutil.copyfile(ffmpeg+output+'movie.mp4',workdir+output+'movie.mp4')
+
 
 ## Set up stuff to plot during animation
 #hb = m.hexbin(a,b, gridsize=(100,100), mincnt=1)
@@ -120,6 +147,6 @@ plt.title('Western US Igneous Activity')
 #anim.save(output+'.mp4', fps=30, dpi=300,
 #          extra_args=['-vcodec', 'libx264'])
 #          
-#print("All done!")
+print("All done!")
 #
 #plt.show()
