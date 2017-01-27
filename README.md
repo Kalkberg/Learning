@@ -17,11 +17,9 @@ pdf_writer.py - Learned how to make a table from a bunch of data in LaTeX and ou
 
 plotting.py - Learned how to make and save basic plots to PDF format.
 
-<<<<<<< HEAD
 Plot_Anim.py - Takes a csv of age, lat, and long data and makes an animation with a geographic basemap.
 
+Plot_Anim_Hexbin.py - Same as Plot_Anim but makes hexbins of data. Implementation is different as hexbin is not iterable for matplotlib's animation toolbox. Uses ffmpeg executable instead. Includes sending a command to ffmpeg which includes user input and is therefore a huge security issue. Since there is no windows version of ffmpeg for python at the moment, there may not be a workaround. 
+
 PTBAxes - obtain P, T, and B axes orientations from strike, dip and rake data.
-=======
-PTBAxes - Obtain P, T, and B axis orientations from strike, dip and rake data.
->>>>>>> origin/master
 
