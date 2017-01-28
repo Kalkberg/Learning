@@ -11,6 +11,7 @@ Made and currently set to plot volcanic data from North America.
 
 # Import needed packages
 import numpy as np
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import sys
@@ -45,70 +46,157 @@ from mpl_toolkits.basemap import Basemap
 #
 
 #Input paramaters for debuging
-data = 'NAM_Ig3.csv'
-output = 'NAM_Ig_Hex'
+data = 'NAM_Volc.csv'
+output = 'NAM_Volc_Hex_36Ma'
 ffmpeg = 'C:/FFMPEG/bin/'
 workdir = 'D:/GitHub/Learning/'
+lat_min = 29
+lat_max = 50
+long_min = -128
+long_max = -101
+age_min = 0
+age_max = 144
+hexsize = (25, 24)
+step = 1 # Controlls length of animation
+plt_int = 5 # Controlls how long to keep points on plot
+max_dens = 100 # Defines maximum density expected in dataset
 
 # Move to working directory
 os.chdir(workdir)
 
-
-
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
 data = np.delete(data, (0), axis=0)
-age, lat, long = data[:,0], data[:,1], data[:,2]
+age_in, lat_in, long_in = data[:,0], data[:,1], data[:,2]
+
+# Create blank arrays for later use
+age = np.array([])
+lat = np.array([])
+long = np.array([])
+
+# Cut data outside region and time of interest so hexplot polygons are same size
+for i in range(0,len(age_in)):
+    if (age_in[i] > age_min and age_in[i] < age_max and 
+    lat_in[i] > lat_min and lat_in[i] < lat_max and
+    long_in[i] > long_min and long_in[i] < long_max):
+        age = np.r_[age, age_in[i]]
+        lat = np.r_[lat, lat_in[i]]
+        long = np.r_[long, long_in[i]]
 
 # Move to ffmpeg directory
 os.chdir(ffmpeg)
-
-# Parameter that affects length of animation
-step = 1 # Controlls length of animation
-plt_int = 5 # Controlls how long to keep points on plot
 
 # Set up figure and projection
 fig = plt.figure()
 fig.set_canvas(plt.gcf().canvas)
 ax = fig.add_subplot(111)
+ax.autoscale(enable=False)
 m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
             llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
+#m.drawcoastlines(linewidth=0.5)
+#m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
+#m.drawstates(linewidth=0.5, linestyle='solid', color='k')
+#m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
+#m.drawmeridians(np.arange(-125.,-105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
+#m.drawmapboundary(fill_color='white')
+#plt.title('Western US Igneous Activity')
 
-# Convert data to projection coordinates
+# Define colormap
+cmap = cm.get_cmap('cubehelix')
+
+# Convert data to projection coordinates and make into array for hexbin
 x, y = m(long, lat)
+x = np.array(x)
+y = np.array(y)
 
-# Make contour plot of the entire interval to get its colorbar
-hb1 = m.hexbin(x,y, gridsize=(100,100), mincnt=1)
-cb = fig.colorbar(hb1, ax=ax)
-cb.set_label('counts')
-plt.cla() # Clear axes gets rid of everything except color bar
+## Get axis limits from basemap plot
+#xlim = ax.get_xlim()
+#ylim = ax.get_ylim()
+#
+## Make contour plot of the entire interval to get its colorbar
+#hb1 = m.hexbin(x,y, gridsize = hexsize, mincnt=1,
+#               bins = (0, 10, 100, 1000, 10000),
+#               extent = (xlim[0],xlim[1],ylim[0],ylim[1]))
+#cb = fig.colorbar(hb1, ax=ax)
+#cb.set_label('Relative Density')
+#
+#plt.cla() # Clear axes gets rid of everything except color bar
 
-for i in range(0,int(age.max()),step):        
+for i in range(0,int(age.max()),step):   
+    
+    # Counter for age instance to make sure you go from old to young    
+    age_int = (int(age.max())-i)
+         
     #Redraw the base map
-    m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
+    m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,
                 llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
     m.drawcoastlines(linewidth=0.5)
     m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
     m.drawstates(linewidth=0.5, linestyle='solid', color='k')
-    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
-    m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
+    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 0, 0, 0])
+    m.drawmeridians(np.arange(-125.,-104.,10.), linewidth=.75, labels=[0, 0, 0, 1])
     m.drawmapboundary(fill_color='white')
     plt.title('Western US Igneous Activity')
     
-    # Make hexplot for this time interval
+    # Collect data for this time interval
     x_plot = np.array([x[j] for j in range(0,len(age)) \
-        if (age[j] < i + plt_int and age[j] > i)])
+        if (age[j] < age_int + plt_int and age[j] > age_int)])
     y_plot = np.array([y[j] for j in range(0,len(age)) \
-        if (age[j] < i + plt_int and age[j] > i)])
-    hb_plot = m.hexbin(x_plot,y_plot, gridsize=(100,100), mincnt=1)
+        if (age[j] < age_int + plt_int and age[j] > age_int)])
+     
+    # Get axis limits from basemap plot
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+#    # Append x and y values outside of bounding box to keep hexes same size
+#    x_ul, y_ul = m(long_min-1, lat_max+1)
+#    x_ur, y_ur = m(long_max+1, lat_max+1)
+#    x_ll, y_ll = m(long_min-1, lat_min-1)
+#    x_lr, y_lr = m(long_max+1, lat_min-1)
+#    xplot = np.r_[x_plot,x_ul,x_ur,x_ll,x_lr]
+#    yplot = np.r_[y_plot,y_ul,y_ur,y_ll,y_lr]
+       
+    # Make Plot
+    hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
+                extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,)
+    
+    # Force draw so that get colors works    
+    ax.figure.canvas.draw()
+
+    # Get counts for each bin and assigned color
+    counts = hb_plot.get_array() # counts are (n, )
+    colors = hb_plot.get_facecolors() # colors are (n, 4)
+    
+    # Make a blank array for new colors    
+    colors_new = np.array([])
+    
+    # Redefine colors using color bar    
+    for i in range(0,len(counts)):
+        if counts[i] ==0:
+            colors_new = np.r_[colors_new, np.zeros([1,4])] 
+        colors_new = np.r_[colors_new, np.array(cmap(counts[i]/max_dens))]    
       
+    hb_plot.set_facecolors(colors_new)
+    
+    # Make color bar
+    cb = fig.colorbar(hb_plot, ax=ax)
+    cb.set_label('Number of Samples')
+    
+    # Make text box
+    time_text = ax.text(0.035, 0.035, 'Age = %s Ma' %int(age_int), 
+                    transform=ax.transAxes, backgroundcolor='w')
+                                      
     # Save plot to name padded to five digits and save everything
-    fig.savefig('Frame'+str(i).zfill(5)+'.png')
+    fig.savefig('Frame'+str(i).zfill(5)+'.png', dpi=300)
+    
+    # Delete hexplot and color bar   
     plt.cla()
+    cb.remove()
+    
     
 #Run FFmpeg
-subprocess.Popen(['ffmpeg -f image2 -r 1/2 -i Frame%05d.png -vcodec mpeg4 -y '+output+'movie.mp4'
-                  ]).wait()
+subprocess.Popen(['ffmpeg -f image2 -r 2 -i Frame%%05d.png -vcodec mpeg4'\
+                ' -y %smovie.mp4' %output]).wait()
 
 # Clean up
 #for j in range(0,int(age.max()),step):
