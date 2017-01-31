@@ -168,13 +168,13 @@ for i in range(0,int(age.max()),step):
     colors = hb_plot.get_facecolors() # colors are (n, 4)
     
     # Make a blank array for new colors    
-    colors_new = np.array([])
+    colors_new = np.empty([1,4])
     
     # Redefine colors using color bar    
     for i in range(0,len(counts)):
         if counts[i] ==0:
-            colors_new = np.r_[colors_new, np.zeros([1,4])] 
-        colors_new = np.r_[colors_new, np.array(cmap(counts[i]/max_dens))]    
+            colors_new = np.r_['0,2', colors_new, np.zeros([1,4])] 
+        colors_new = np.r_['0,2', colors_new, np.array(cmap(counts[i]/max_dens))]    
       
     hb_plot.set_facecolors(colors_new)
     

@@ -16,36 +16,37 @@ import matplotlib.animation as animation
 import sys
 import os
 from mpl_toolkits.basemap import Basemap
+from moviepy.editor import *
 
 
-# Create function describing usage and terminating program for errors
-def error():
-    print("Usage: python3 Plot_Anim.py working_dir data.csv Output")
-    print("Where working_dir is the full path to the data")
-    print("e.g. C:/users/animation")
-    print("data.csv contains comma delimited files of age, lat, and long")
-    print("Output is the name of the pdf map to generate from data")
-    sys.exit()
-
-# Check number of arguments and import, if not three, return error
-if len(sys.argv) == 4:
-    # Import directory to work on and satellite type from input arguments
-    workdir = sys.argv[1]
-    data = sys.argv[2]
-    output = sys.argv[3]
-    print("Current working directory is set to %s" % workdir)
-    print("Data file set to %s" % data)
-    print("Output file set to %s" % output)
-else:
-    print("Error: Wrong number of input arguments!")
-    error()
-    
-# Move to working directory
-os.chdir(workdir)
+## Create function describing usage and terminating program for errors
+#def error():
+#    print("Usage: python3 Plot_Anim.py working_dir data.csv Output")
+#    print("Where working_dir is the full path to the data")
+#    print("e.g. C:/users/animation")
+#    print("data.csv contains comma delimited files of age, lat, and long")
+#    print("Output is the name of the pdf map to generate from data")
+#    sys.exit()
 #
-## Input paramaters for debuging
-#data = 'NAM_Ig3.csv'
-#output = 'NAM_Ig4'
+## Check number of arguments and import, if not three, return error
+#if len(sys.argv) == 4:
+#    # Import directory to work on and satellite type from input arguments
+#    workdir = sys.argv[1]
+#    data = sys.argv[2]
+#    output = sys.argv[3]
+#    print("Current working directory is set to %s" % workdir)
+#    print("Data file set to %s" % data)
+#    print("Output file set to %s" % output)
+#else:
+#    print("Error: Wrong number of input arguments!")
+#    error()
+#    
+## Move to working directory
+#os.chdir(workdir)
+#
+# Input paramaters for debuging
+data = 'NAM_Volc.csv'
+output = 'NAM_Volc'
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
@@ -90,7 +91,7 @@ m.drawstates(linewidth=0.5, linestyle='solid', color='k')
 m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
 m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
 m.drawmapboundary(fill_color='white')
-plt.title('Western US Igneous Activity')
+plt.title('Western US Volcanic Activity')
 
 # Convert data to projection coordinates
 x, y = m(long, lat)
@@ -131,5 +132,10 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
 
 anim.save(output+'.mp4', fps=30, dpi=300,
           extra_args=['-vcodec', 'libx264'])
-          
+
+
+clip = (VideoFileClip(output+'.mp4'))
+clip.write_gif(output+'.mp4')
+
+
 print("All done!")
