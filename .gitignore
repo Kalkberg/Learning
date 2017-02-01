@@ -26,6 +26,7 @@ $RECYCLE.BIN/
 *.kmz
 *.mp4
 *.exe
+*.gif
 
 # =========================
 # Operating System Files
