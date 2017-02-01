@@ -93,13 +93,6 @@ ax = fig.add_subplot(111)
 ax.autoscale(enable=False)
 m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
             llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
-#m.drawcoastlines(linewidth=0.5)
-#m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
-#m.drawstates(linewidth=0.5, linestyle='solid', color='k')
-#m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
-#m.drawmeridians(np.arange(-125.,-105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
-#m.drawmapboundary(fill_color='white')
-#plt.title('Western US Igneous Activity')
 
 # Define colormap
 cmap = cm.get_cmap('cubehelix')
@@ -108,19 +101,6 @@ cmap = cm.get_cmap('cubehelix')
 x, y = m(long, lat)
 x = np.array(x)
 y = np.array(y)
-
-## Get axis limits from basemap plot
-#xlim = ax.get_xlim()
-#ylim = ax.get_ylim()
-#
-## Make contour plot of the entire interval to get its colorbar
-#hb1 = m.hexbin(x,y, gridsize = hexsize, mincnt=1,
-#               bins = (0, 10, 100, 1000, 10000),
-#               extent = (xlim[0],xlim[1],ylim[0],ylim[1]))
-#cb = fig.colorbar(hb1, ax=ax)
-#cb.set_label('Relative Density')
-#
-#plt.cla() # Clear axes gets rid of everything except color bar
 
 for i in range(0,int(age.max()),step):   
     
@@ -136,7 +116,7 @@ for i in range(0,int(age.max()),step):
     m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 0, 0, 0])
     m.drawmeridians(np.arange(-125.,-104.,10.), linewidth=.75, labels=[0, 0, 0, 1])
     m.drawmapboundary(fill_color='white')
-    plt.title('Western US Igneous Activity')
+    plt.title('Western US Volcanic Activity')
     
     # Collect data for this time interval
     x_plot = np.array([x[j] for j in range(0,len(age)) \
@@ -148,36 +128,11 @@ for i in range(0,int(age.max()),step):
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
 
-#    # Append x and y values outside of bounding box to keep hexes same size
-#    x_ul, y_ul = m(long_min-1, lat_max+1)
-#    x_ur, y_ur = m(long_max+1, lat_max+1)
-#    x_ll, y_ll = m(long_min-1, lat_min-1)
-#    x_lr, y_lr = m(long_max+1, lat_min-1)
-#    xplot = np.r_[x_plot,x_ul,x_ur,x_ll,x_lr]
-#    yplot = np.r_[y_plot,y_ul,y_ur,y_ll,y_lr]
-       
     # Make Plot
     hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
-                extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,)
-    
-    # Force draw so that get colors works    
-    ax.figure.canvas.draw()
-
-    # Get counts for each bin and assigned color
-    counts = hb_plot.get_array() # counts are (n, )
-    colors = hb_plot.get_facecolors() # colors are (n, 4)
-    
-    # Make a blank array for new colors    
-    colors_new = np.empty([1,4])
-    
-    # Redefine colors using color bar    
-    for i in range(0,len(counts)):
-        if counts[i] ==0:
-            colors_new = np.r_['0,2', colors_new, np.zeros([1,4])] 
-        colors_new = np.r_['0,2', colors_new, np.array(cmap(counts[i]/max_dens))]    
-      
-    hb_plot.set_facecolors(colors_new)
-    
+                extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,
+                vmin=1, vmax=max_dens, cmap='viridis')
+   
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
     cb.set_label('Number of Samples')
@@ -196,7 +151,7 @@ for i in range(0,int(age.max()),step):
     
 #Run FFmpeg
 subprocess.Popen(['ffmpeg -f image2 -r 2 -i Frame%%05d.png -vcodec mpeg4'\
-                ' -y %smovie.mp4' %output]).wait()
+                ' -q:v 1 -y %s.mp4' %output]).wait()
 
 # Clean up
 #for j in range(0,int(age.max()),step):
@@ -204,37 +159,5 @@ subprocess.Popen(['ffmpeg -f image2 -r 2 -i Frame%%05d.png -vcodec mpeg4'\
 
 #shutil.copyfile(ffmpeg+output+'movie.mp4',workdir+output+'movie.mp4')
 
-
-## Set up stuff to plot during animation
-#hb = m.hexbin(a,b, gridsize=(100,100), mincnt=1)
-#time_text = ax.text(0.035, 0.035, '', 
-#                    transform=ax.transAxes, backgroundcolor='w')
-#                    
-## Function to create frame for the animation
-#def init():
-#    hb.set_data(a,b)
-#    time_text.set_text('')
-#    return hb, time_text,
-#
-## Function to plot data for each frame. i is the number of the frame
-#def animate(i):
-#    age_int = (int(age.max())-i/p)
-#    # Only plot within plt_int Myr of eruption
-#    x = [x[j] for j in range(0,len(age)) \
-#        if (age[j] < age_int + plt_int and age[j] > age_int)]
-#    y = [y[j] for j in range(0,len(age)) \
-#        if (age[j] < age_int + plt_int and age[j] > age_int)]
-#    hb.set_data(x,y)
-#    time_text.set_text('Age = %s Ma' %int(age_int))
-#    return hb, time_text,
-#
-##Animate the figure
-#anim = animation.FuncAnimation(fig, animate, init_func=init, 
-#                               frames=int(age.max())*p, interval=20,  blit=True)
-#
-#anim.save(output+'.mp4', fps=30, dpi=300,
-#          extra_args=['-vcodec', 'libx264'])
-#          
+          
 print("All done!")
-#
-#plt.show()
