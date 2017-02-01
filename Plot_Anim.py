@@ -16,7 +16,6 @@ import matplotlib.animation as animation
 import sys
 import os
 from mpl_toolkits.basemap import Basemap
-from moviepy.editor import *
 
 
 ## Create function describing usage and terminating program for errors
@@ -132,10 +131,6 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
 
 anim.save(output+'.mp4', fps=30, dpi=300,
           extra_args=['-vcodec', 'libx264'])
-
-
-clip = (VideoFileClip(output+'.mp4'))
-clip.write_gif(output+'.mp4')
-
+anim.save(output+'.gif', dpi=300, writer='imagemagick')
 
 print("All done!")
