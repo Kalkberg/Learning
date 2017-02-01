@@ -131,6 +131,6 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
 
 anim.save(output+'.mp4', fps=30, dpi=300,
           extra_args=['-vcodec', 'libx264'])
-anim.save(output+'.gif', dpi=300, writer='imagemagick')
+anim.save(output+'.gif', fps=30, dpi=150)
 
 print("All done!")
