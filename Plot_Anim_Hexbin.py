@@ -13,12 +13,13 @@ Made and currently set to plot volcanic data from North America.
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import sys
+#import matplotlib.animation as animation
+#import sys
 import os
-import shutil
-import subprocess
+#import shutil
+#import subprocess
 from mpl_toolkits.basemap import Basemap
+from moviepy.editor import *
 
 
 ## Create function describing usage and terminating program for errors
@@ -47,19 +48,20 @@ from mpl_toolkits.basemap import Basemap
 
 #Input paramaters for debuging
 data = 'NAM_Volc.csv'
-output = 'NAM_Volc_Hex_36Ma'
-ffmpeg = 'C:/FFMPEG/bin/'
+output = 'NAM_Volc_Hex_37Ma_1Myr_1000samples_log'
+#ffmpeg = 'C:/FFMPEG/bin/'
 workdir = 'D:/GitHub/Learning/'
 lat_min = 29
 lat_max = 50
 long_min = -128
 long_max = -101
 age_min = 0
-age_max = 144
-hexsize = (25, 24)
-step = 1 # Controlls length of animation
-plt_int = 5 # Controlls how long to keep points on plot
-max_dens = 100 # Defines maximum density expected in dataset
+age_max = 37
+hexsize = (25, 22)
+step = 1 # Frames per Myr
+plt_int = 0.5 # 0.5 x Myr of data to count for each cell
+max_dens = 1000 # Defines maximum density expected in dataset
+fps_mov = 2 # Fps of final video
 
 # Move to working directory
 os.chdir(workdir)
@@ -84,7 +86,7 @@ for i in range(0,len(age_in)):
         long = np.r_[long, long_in[i]]
 
 # Move to ffmpeg directory
-os.chdir(ffmpeg)
+#os.chdir(ffmpeg)
 
 # Set up figure and projection
 fig = plt.figure()
@@ -101,6 +103,9 @@ cmap = cm.get_cmap('cubehelix')
 x, y = m(long, lat)
 x = np.array(x)
 y = np.array(y)
+
+# Create empty list of frames
+frames = []
 
 for i in range(0,int(age.max()),step):   
     
@@ -120,9 +125,9 @@ for i in range(0,int(age.max()),step):
     
     # Collect data for this time interval
     x_plot = np.array([x[j] for j in range(0,len(age)) \
-        if (age[j] < age_int + plt_int and age[j] > age_int)])
+        if (age[j] < age_int + plt_int and age[j] > age_int - plt_int)])
     y_plot = np.array([y[j] for j in range(0,len(age)) \
-        if (age[j] < age_int + plt_int and age[j] > age_int)])
+        if (age[j] < age_int + plt_int and age[j] > age_int - plt_int)])
      
     # Get axis limits from basemap plot
     xlim = ax.get_xlim()
@@ -131,7 +136,7 @@ for i in range(0,int(age.max()),step):
     # Make Plot
     hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
                 extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,
-                vmin=1, vmax=max_dens, cmap='viridis')
+                vmin=1, vmax=max_dens, cmap='viridis', bins='log')
    
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
@@ -144,18 +149,32 @@ for i in range(0,int(age.max()),step):
     # Save plot to name padded to five digits and save everything
     fig.savefig('Frame'+str(i).zfill(5)+'.png', dpi=300)
     
+    # Add to list of frames
+    frames.insert(len(frames),'Frame'+str(i).zfill(5)+'.png')  
+    
     # Delete hexplot and color bar   
     plt.cla()
     cb.remove()
-    
-    
-#Run FFmpeg
-subprocess.Popen(['ffmpeg -f image2 -r 2 -i Frame%%05d.png -vcodec mpeg4'\
-                ' -q:v 1 -y %s.mp4' %output]).wait()
 
+
+animation = ImageSequenceClip(frames, fps = fps_mov)
+animation.write_videofile('%s.mp4' %output)
+#animation.write_gif('%s.gif' %output)
+   
+   
+##Run FFmpeg
+#FFMPEG_BIN = "ffmpeg.exe"
+#
+#pipe = subprocess.Popen(['ffmpeg.exe', '-f image2 -r 2 -i', 
+#                         'Frame%%05d.png', '-vcodec', 'mpeg4',
+#                         '-q:v,', '1', '-y', '%s.mp4' %output],
+#                         stdout = subprocess.PIPE, bufsize=10**8).wait()
+
+    
+    
 # Clean up
-#for j in range(0,int(age.max()),step):
-#    os.remove('Frame'+str(j).zfill(5)+'.png')
+for j in range(0,len(frames)):
+    os.remove(frames[j])
 
 #shutil.copyfile(ffmpeg+output+'movie.mp4',workdir+output+'movie.mp4')
 
