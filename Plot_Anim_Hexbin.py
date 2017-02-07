@@ -13,7 +13,6 @@ Made and currently set to plot volcanic data from North America.
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-#import matplotlib.animation as animation
 #import sys
 import os
 #import shutil
@@ -48,20 +47,19 @@ from moviepy.editor import *
 
 #Input paramaters for debuging
 data = 'NAM_Volc.csv'
-output = 'NAM_Volc_Hex_37Ma_1Myr_1000samples_log'
-#ffmpeg = 'C:/FFMPEG/bin/'
+output = 'NAM_Volc_Hex_144Ma_2Myr_200samples_2frames'
 workdir = 'D:/GitHub/Learning/'
 lat_min = 29
 lat_max = 50
 long_min = -128
 long_max = -101
 age_min = 0
-age_max = 37
-hexsize = (25, 22)
-step = 1 # Frames per Myr
-plt_int = 0.5 # 0.5 x Myr of data to count for each cell
-max_dens = 1000 # Defines maximum density expected in dataset
-fps_mov = 2 # Fps of final video
+age_max = 144
+hexsize = (25, 20)
+step = 2 # Frames per Myr
+plt_int = 1 # 0.5 x Myr of data to count for each cell
+max_dens = 200 # Defines maximum density expected in dataset
+fps_mov = 4 # Fps of final video
 
 # Move to working directory
 os.chdir(workdir)
@@ -85,9 +83,6 @@ for i in range(0,len(age_in)):
         lat = np.r_[lat, lat_in[i]]
         long = np.r_[long, long_in[i]]
 
-# Move to ffmpeg directory
-#os.chdir(ffmpeg)
-
 # Set up figure and projection
 fig = plt.figure()
 fig.set_canvas(plt.gcf().canvas)
@@ -95,9 +90,6 @@ ax = fig.add_subplot(111)
 ax.autoscale(enable=False)
 m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
             llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
-
-# Define colormap
-cmap = cm.get_cmap('cubehelix')
 
 # Convert data to projection coordinates and make into array for hexbin
 x, y = m(long, lat)
@@ -107,10 +99,10 @@ y = np.array(y)
 # Create empty list of frames
 frames = []
 
-for i in range(0,int(age.max()),step):   
+for i in range(0,int(age.max())*step,1):   
     
     # Counter for age instance to make sure you go from old to young    
-    age_int = (int(age.max())-i)
+    age_int = (int(age.max())-i/step)
          
     #Redraw the base map
     m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,
@@ -136,7 +128,7 @@ for i in range(0,int(age.max()),step):
     # Make Plot
     hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
                 extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,
-                vmin=1, vmax=max_dens, cmap='viridis', bins='log')
+                vmin=1, vmax=max_dens, cmap='viridis')
    
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
@@ -159,24 +151,10 @@ for i in range(0,int(age.max()),step):
 
 animation = ImageSequenceClip(frames, fps = fps_mov)
 animation.write_videofile('%s.mp4' %output)
-#animation.write_gif('%s.gif' %output)
-   
-   
-##Run FFmpeg
-#FFMPEG_BIN = "ffmpeg.exe"
-#
-#pipe = subprocess.Popen(['ffmpeg.exe', '-f image2 -r 2 -i', 
-#                         'Frame%%05d.png', '-vcodec', 'mpeg4',
-#                         '-q:v,', '1', '-y', '%s.mp4' %output],
-#                         stdout = subprocess.PIPE, bufsize=10**8).wait()
-
-    
+#animation.write_gif('%s.gif' %output) 
     
 # Clean up
 for j in range(0,len(frames)):
     os.remove(frames[j])
-
-#shutil.copyfile(ffmpeg+output+'movie.mp4',workdir+output+'movie.mp4')
-
           
 print("All done!")
