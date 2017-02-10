@@ -100,7 +100,7 @@ x, y = m(long, lat)
 # Set up stuff to plot during animation
 rpoints, = m.plot([],[],marker='o',color='r', linestyle='none', markersize=3)
 kpoints, = m.plot([],[],marker='o',color='k', linestyle='none', markersize=1)
-time_text = ax.text(0.015, 0.035, '', 
+time_text = ax.text(0.025, 0.035, '', 
                     transform=ax.transAxes, backgroundcolor='w')
 
 # Function to create frame for the animation
