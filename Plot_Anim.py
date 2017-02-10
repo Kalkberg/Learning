@@ -45,7 +45,7 @@ from mpl_toolkits.basemap import Basemap
 #
 # Input paramaters for debuging
 data = 'NAM_Volc.csv'
-output = 'NAM_Volc'
+output = 'NAM_Volc2'
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
@@ -77,19 +77,21 @@ ax.set_ylim([29,50])
 #            resolution='i',area_thresh=1000.,projection='lcc',\
 #            lat_1=35.,lat_2=45,lat_0=40,lon_0=-113.)
 m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
-            llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
+            llcrnrlon=-125,urcrnrlon=-101,lat_ts=40,resolution='i')
 #m = Basemap(projection='merc',
 #            llcrnrlat=(lat.min() - 0.1*lat.min()),
 #            urcrnrlat=(lat.max() + 0.1*lat.max()),
 #            llcrnrlon=(long.min() - 0.1*long.min()),
 #            urcrnrlon=(lat.max() + 0.1*lat.max()),
 #            lat_ts=lat.mean(),resolution='l')
-m.drawcoastlines(linewidth=0.5)
-m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
-m.drawstates(linewidth=0.5, linestyle='solid', color='k')
-m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 1, 0, 0])
-m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, labels=[0, 0, 0, 1])
-m.drawmapboundary(fill_color='white')
+m.drawcoastlines(linewidth=0.5, color='0.8')
+m.drawcountries(linewidth=0.5, linestyle='solid', color='0.8')
+m.drawstates(linewidth=0.5, linestyle='solid', color='0.8')
+#m.drawparallels(np.arange(35.,46.,10.), linewidth=.75, 
+#                labels=[1, 1, 0, 0], color='0.8')
+#m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, 
+#                labels=[0, 0, 0, 1], color='0.8')
+m.drawmapboundary(fill_color='white', color='0.8')
 plt.title('Western US Volcanic Activity')
 
 # Convert data to projection coordinates
@@ -98,7 +100,7 @@ x, y = m(long, lat)
 # Set up stuff to plot during animation
 rpoints, = m.plot([],[],marker='o',color='r', linestyle='none', markersize=3)
 kpoints, = m.plot([],[],marker='o',color='k', linestyle='none', markersize=1)
-time_text = ax.text(0.035, 0.035, '', 
+time_text = ax.text(0.015, 0.035, '', 
                     transform=ax.transAxes, backgroundcolor='w')
 
 # Function to create frame for the animation
@@ -131,6 +133,6 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
 
 anim.save(output+'.mp4', fps=30, dpi=300,
           extra_args=['-vcodec', 'libx264'])
-anim.save(output+'.gif', fps=30, dpi=150)
+anim.save(output+'.gif', writer='imagemagick', fps=30, dpi=150)
 
 print("All done!")
