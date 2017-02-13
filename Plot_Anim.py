@@ -44,8 +44,8 @@ from mpl_toolkits.basemap import Basemap
 #os.chdir(workdir)
 #
 # Input paramaters for debuging
-data = 'NAM_Volc.csv'
-output = 'NAM_Volc2'
+data = 'NAM_Ig3.csv'
+output = 'NAM_Ig2'
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
@@ -87,12 +87,12 @@ m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
 m.drawcoastlines(linewidth=0.5, color='0.8')
 m.drawcountries(linewidth=0.5, linestyle='solid', color='0.8')
 m.drawstates(linewidth=0.5, linestyle='solid', color='0.8')
-#m.drawparallels(np.arange(35.,46.,10.), linewidth=.75, 
-#                labels=[1, 1, 0, 0], color='0.8')
-#m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, 
-#                labels=[0, 0, 0, 1], color='0.8')
+m.drawparallels(np.arange(35.,46.,10.), linewidth=.75, 
+                labels=[1, 1, 0, 0], color='0.8')
+m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75, 
+                labels=[0, 0, 0, 1], color='0.8')
 m.drawmapboundary(fill_color='white', color='0.8')
-plt.title('Western US Volcanic Activity')
+plt.title('Western US Igneous Activity')
 
 # Convert data to projection coordinates
 x, y = m(long, lat)
