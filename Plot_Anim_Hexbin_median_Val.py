@@ -141,7 +141,7 @@ for i in range(0,int(age_max.max())*step,1):
     hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
                 extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,
                 vmin=min_dens, vmax=max_dens, cmap='viridis',
-                reduce_C_function=np.median, C=val_plot
+                reduce_C_function=np.median, C=val_plot, zorder=3
                 )
    
     # Make color bar
