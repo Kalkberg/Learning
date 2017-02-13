@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-MIT Open Courseware 6.189, Homework 1, Exercise 1.7
+MIT Open Courseware 6.189, Homework 2, Exercise 1.9
 
 Pig latin
 
@@ -19,6 +19,3 @@ else:
     pigword = word[1:] + 'ay'
 
 print(pigword)
-
-for i in range(1,2)):
-    for i 

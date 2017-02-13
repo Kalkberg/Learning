@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-MIT Open Courseware 6.189, Homework 1, Optional Exercise 12
+MIT Open Courseware 6.189, Homework 1, Optional Exercise 2
 
 Secret Messages
 
