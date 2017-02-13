@@ -67,7 +67,6 @@ os.chdir(workdir)
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
 data = np.delete(data, (0), axis=0)
-age_in, lat_in, long_in = data[:,0], data[:,1], data[:,2]
 age_min_in, age_max_in, lat_in, long_in, val_in = data[:,0], data[:,1], data[:,2], data[:,3], data[:,4]
 
 
@@ -79,7 +78,7 @@ long = np.array([])
 val = np.array([])
 
 # Cut data outside region and time of interest so hexplot polygons are same size
-for i in range(0,len(age_in)):
+for i in range(0,len(age_max_in)):
     if (age_min_in[i] > age_min_cut and age_max_in[i] < age_max_cut and 
     lat_in[i] > lat_min and lat_in[i] < lat_max and
     long_in[i] > long_min and long_in[i] < long_max):
@@ -87,7 +86,7 @@ for i in range(0,len(age_in)):
         age_max = np.r_[age_max, age_max_in[i]]
         lat = np.r_[lat, lat_in[i]]
         long = np.r_[long, long_in[i]]
-        val = np.r_[long, long_in[i]]
+        val = np.r_[val, val_in[i]]
 
 # Set up figure and projection
 fig = plt.figure()
@@ -113,21 +112,26 @@ for i in range(0,int(age_max.max())*step,1):
     #Redraw the base map
     m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,
                 llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
-    m.drawcoastlines(linewidth=0.5)
-    m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
-    m.drawstates(linewidth=0.5, linestyle='solid', color='k')
-    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 0, 0, 0])
-    m.drawmeridians(np.arange(-125.,-104.,10.), linewidth=.75, labels=[0, 0, 0, 1])
-    m.drawmapboundary(fill_color='white')
+    m.drawcoastlines(linewidth=0.5, color='0.8')
+    m.drawcountries(linewidth=0.5, linestyle='solid', color='0.8')
+    m.drawstates(linewidth=0.5, linestyle='solid', color='0.8')
+    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75,
+                    labels=[1, 0, 0, 0], color='0.8')
+    m.drawmeridians(np.arange(-125.,-104.,10.), linewidth=.75,
+                    labels=[0, 0, 0, 1], color='0.8')
+    m.drawmapboundary(fill_color='none', color='0.8')
     plt.title('Western US Igneous Activity')
     
     # Collect data for this time interval
     x_plot = np.array([x[j] for j in range(0,len(age_max)) \
-        if (age_max[j] <= age_int + plt_int or age_min[j] >= age_int - plt_int)])
+        if ((age_max[j] >= age_int - plt_int and age_min[j] <= age_int - plt_int)
+            or (age_max[j] >= age_int + plt_int and age_min[j] <= age_int + plt_int))])
     y_plot = np.array([y[j] for j in range(0,len(age_max)) \
-        if (age_max[j] <= age_int + plt_int or age_min[j] >= age_int - plt_int)])
+        if ((age_max[j] >= age_int - plt_int and age_min[j] <= age_int - plt_int)
+            or (age_max[j] >= age_int + plt_int and age_min[j] <= age_int + plt_int))])
     val_plot = np.array([val[j] for j in range(0,len(age_max)) \
-        if (age_max[j] <= age_int + plt_int or age_min[j] >= age_int - plt_int)])
+        if ((age_max[j] >= age_int - plt_int and age_min[j] <= age_int - plt_int)
+            or (age_max[j] >= age_int + plt_int and age_min[j] <= age_int + plt_int))])
      
     # Get axis limits from basemap plot
     xlim = ax.get_xlim()
