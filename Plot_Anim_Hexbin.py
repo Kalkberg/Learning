@@ -47,7 +47,7 @@ from moviepy.editor import *
 
 #Input paramaters for debuging
 data = 'NAM_Volc_Min_Max.csv'
-output = 'NAM_Volc_Hex_144Ma_2Myr_MinMax'
+output = 'NAM_Volc_Hex_144Ma_2Myr_MinMax3'
 workdir = 'D:/GitHub/Learning/'
 lat_min = 29
 lat_max = 50
@@ -92,6 +92,10 @@ fig = plt.figure()
 fig.set_canvas(plt.gcf().canvas)
 ax = fig.add_subplot(111)
 ax.autoscale(enable=False)
+#m = Basemap(width=2300000,height=2400000,
+#            rsphere=(6378137.00,6356752.3142),\
+#            resolution='i',area_thresh=1000.,projection='lcc',\
+#            lat_1=35.,lat_2=45,lat_0=40,lon_0=-113.)
 m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,\
             llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
 
@@ -108,23 +112,30 @@ for i in range(0,int(age_max.max())*step,1):
     # Counter for age instance to make sure you go from old to young    
     age_int = (int(age_max.max())-i/step)
          
-    #Redraw the base map
+    # Redraw the base map
+#    m = Basemap(width=2300000,height=2400000,
+#            rsphere=(6378137.00,6356752.3142),\
+#            resolution='i',area_thresh=1000.,projection='lcc',\
+#            lat_1=35.,lat_2=45,lat_0=40,lon_0=-113.)
     m = Basemap(projection='merc',llcrnrlat=29,urcrnrlat=50,
                 llcrnrlon=-128,urcrnrlon=-101,lat_ts=40,resolution='i')
-    m.drawcoastlines(linewidth=0.5)
-    m.drawcountries(linewidth=0.5, linestyle='solid', color='k')
-    m.drawstates(linewidth=0.5, linestyle='solid', color='k')
-    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75, labels=[1, 0, 0, 0])
-    m.drawmeridians(np.arange(-125.,-104.,10.), linewidth=.75, labels=[0, 0, 0, 1])
-    m.drawmapboundary(fill_color='white')
+    m.drawcoastlines(linewidth=0.5, color='0.8')
+    m.drawcountries(linewidth=0.5, linestyle='solid', color='0.8')
+    m.drawstates(linewidth=0.5, linestyle='solid', color='0.8')
+    m.drawparallels(np.arange(30.,50.,5.), linewidth=.75,
+                    labels=[1, 0, 0, 0], color='0.8')
+    m.drawmeridians(np.arange(-125.,-104.,10.), linewidth=.75,
+                    labels=[0, 0, 0, 1], color='0.8')
+    m.drawmapboundary(fill_color='none')
     plt.title('Western US Volcanic Activity')
-    
-    # Collect data for this time interval
+               
     x_plot = np.array([x[j] for j in range(0,len(age_max)) \
-        if (age_max[j] <= age_int + plt_int or age_min[j] >= age_int - plt_int)])
+        if ((age_max[j] >= age_int - plt_int and age_min[j] <= age_int - plt_int)
+            or (age_max[j] >= age_int + plt_int and age_min[j] <= age_int + plt_int))])
     y_plot = np.array([y[j] for j in range(0,len(age_max)) \
-        if (age_max[j] <= age_int + plt_int or age_min[j] >= age_int - plt_int)])
-     
+        if ((age_max[j] >= age_int - plt_int and age_min[j] <= age_int - plt_int)
+            or (age_max[j] >= age_int + plt_int and age_min[j] <= age_int + plt_int))])
+
     # Get axis limits from basemap plot
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
@@ -132,7 +143,7 @@ for i in range(0,int(age_max.max())*step,1):
     # Make Plot
     hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
                 extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,
-                vmin=1, vmax=max_dens, cmap='viridis')
+                vmin=1, vmax=max_dens, cmap='viridis', zorder=3)
    
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
