@@ -13,10 +13,9 @@ Made and currently set to plot volcanic data from North America.
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import sys
-import os
 from mpl_toolkits.basemap import Basemap
-
+#import sys
+#import os
 
 ## Create function describing usage and terminating program for errors
 #def error():
@@ -59,13 +58,13 @@ age, lat, long = data[:,0], data[:,1], data[:,2]
 #age = np.random.uniform(1,100,size)
 
 
-# Parameter that affects length of animation
+# Parameters that affect animation
 p = 6 # Controlls length of animation
 tred = 1 # Controlls how long to keep red dots
 tblack = 10 # Controlls how long to keep black dots
 
 # Set up figure and background
-fig = plt.figure(dpi=300, figsize=(3.7,3.8))
+fig = plt.figure(dpi=300, figsize=(3.7,3.8)) #Adjust size to area of interest
 fig.set_canvas(plt.gcf().canvas)
 ax = fig.add_subplot(111)
 #ax.set_xlim([long.min() - 0.1*long.min(), long.max() + 0.1*long.max()])
