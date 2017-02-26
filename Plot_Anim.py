@@ -43,9 +43,9 @@ from mpl_toolkits.basemap import Basemap
 ## Move to working directory
 #os.chdir(workdir)
 #
-# Input paramaters for debuging
+# Input paramaters
 data = 'NAM_Ig3.csv'
-output = 'NAM_Ig2'
+output = 'NAM_Ig5'
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
@@ -65,7 +65,7 @@ tred = 1 # Controlls how long to keep red dots
 tblack = 10 # Controlls how long to keep black dots
 
 # Set up figure and background
-fig = plt.figure()
+fig = plt.figure(dpi=300, figsize=(3.7,3.8))
 fig.set_canvas(plt.gcf().canvas)
 ax = fig.add_subplot(111)
 #ax.set_xlim([long.min() - 0.1*long.min(), long.max() + 0.1*long.max()])
@@ -93,6 +93,7 @@ m.drawmeridians(np.arange(-125.,105.,10.), linewidth=.75,
                 labels=[0, 0, 0, 1], color='0.8')
 m.drawmapboundary(fill_color='white', color='0.8')
 plt.title('Western US Igneous Activity')
+plt.tight_layout()
 
 # Convert data to projection coordinates
 x, y = m(long, lat)
@@ -129,10 +130,11 @@ def animate(i):
 
 #Animate the figure
 anim = animation.FuncAnimation(fig, animate, init_func=init, 
-                               frames=int(age.max())*p, interval=20,  blit=True)
-
+                               frames=int(age.max())*p, interval=20,
+                               blit=True)
+#kwargs={'bbox_inches':'tight'}
 anim.save(output+'.mp4', fps=30, dpi=300,
           extra_args=['-vcodec', 'libx264'])
-anim.save(output+'.gif', writer='imagemagick', fps=30, dpi=150)
+anim.save(output+'.gif', writer='imagemagick', fps=30, dpi=100)
 
 print("All done!")
