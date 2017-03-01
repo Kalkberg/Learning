@@ -47,17 +47,17 @@ from moviepy.editor import *
 
 #Input paramaters for debuging
 data = 'NAM_Volc_Min_Max.csv'
-output = 'NAM_Volc_Hex_144Ma_2Myr_MinMax3'
+output = 'NAM_Volc_Hex_36Ma_1Myr_MinMax'
 workdir = 'D:/GitHub/Learning/'
 lat_min = 29
 lat_max = 50
 long_min = -128
 long_max = -101
 age_min_cut = 0
-age_max_cut = 144
+age_max_cut = 36
 hexsize = (25, 20)
 step = 2 # Frames per Myr
-plt_int = 1 # 0.5 x Myr of data to count for each cell
+plt_int = 0.5 # 0.5 x Myr of data to count for each cell
 max_dens = 200 # Defines maximum density expected in dataset
 fps_mov = 4 # Fps of final video
 
@@ -67,7 +67,7 @@ os.chdir(workdir)
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
 data = np.delete(data, (0), axis=0)
-age_in, lat_in, long_in = data[:,0], data[:,1], data[:,2]
+#age_in, lat_in, long_in = data[:,0], data[:,1], data[:,2]
 age_min_in, age_max_in, lat_in, long_in = data[:,0], data[:,1], data[:,2], data[:,3]
 
 
@@ -78,7 +78,7 @@ lat = np.array([])
 long = np.array([])
 
 # Cut data outside region and time of interest so hexplot polygons are same size
-for i in range(0,len(age_in)):
+for i in range(0,len(age_min_in)):
     if (age_min_in[i] > age_min_cut and age_max_in[i] < age_max_cut and 
     lat_in[i] > lat_min and lat_in[i] < lat_max and
     long_in[i] > long_min and long_in[i] < long_max):
@@ -143,7 +143,7 @@ for i in range(0,int(age_max.max())*step,1):
     # Make Plot
     hb_plot = m.hexbin(x_plot,y_plot, gridsize=hexsize, linewidths=0.2, 
                 extent=(xlim[0],xlim[1],ylim[0],ylim[1]), mincnt=1,
-                vmin=1, vmax=max_dens, cmap='viridis', zorder=3)
+                vmin=1, vmax=max_dens, cmap='viridis', zorder=3, bins='log')
    
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
