@@ -8,31 +8,8 @@ Pig latin
 
 @author: Kalkberg
 """
-
-def alltrue(some_list, valtest):
-    out = None
-    for val in some_list:
-        if val < valtest:
-            out = True
-        else:
-            out = False
-            break
-    return out
-
-def onetrue(some_list, valtest):
-    out = None
-    for val in some_list:
-        if val < valtest:
-            out = True
-            break
-        else:
-            out = False
-    return out
-
 # Import statements: DO NOT delete these! DO NOT write code above this!
 from random import randrange
-from string import *
-
 # -----------------------------------
 # Helper code
 # (you don't need to understand this helper code)
@@ -49,7 +26,7 @@ def load_words():
     """
     print("Loading word list from file...")
     # inFile: file
-    inFile = open(WORDLIST_FILENAME, 'r', 0)
+    inFile = open(WORDLIST_FILENAME, 'r')
     # line: string
     line = inFile.readline()
     # wordlist: list of strings
@@ -66,8 +43,6 @@ words_dict = load_words()
 
 # Run get_word() within your program to generate a random secret word
 # by using a line like this within your program:
-# secret_word = get_word()
-
 def get_word():
     """
     Returns a random word from the word list
@@ -83,7 +58,7 @@ def get_word():
 MAX_GUESSES = 6
 
 # GLOBAL VARIABLES 
-secret_word = 'claptrap' 
+secret_word = get_word()
 letters_guessed = []
 
 # From part 3b:
@@ -114,7 +89,7 @@ def print_guessed():
     
     ####### YOUR CODE HERE ######
     out = ''
-    for i in range(0,len(secret_word)-1):
+    for i in range(0,len(secret_word)):
         if secret_word[i] in letters_guessed:
             out += secret_word[i]
         else:
@@ -135,10 +110,10 @@ def play_hangman():
     # secret_word  = get_word()
 
     ####### YOUR CODE HERE ######
-    guesses = 0
+
     
-    while (guesses < MAX_GUESSES+1):
-        print('%s guesses left!'%(MAX_GUESSES-guesses))
+    while (mistakes_made < MAX_GUESSES) and (word_guessed() == False):
+        print('%s guesses left!'%(MAX_GUESSES-mistakes_made))
         print_guessed()
         guess_let = input('Print the letter you want to guess: ')
         guess_let.lower()
@@ -151,10 +126,16 @@ def play_hangman():
             # Check if the letter is in the word
             if guess_let in secret_word:
                 print('Got one!')
-                
             else:
                 print('Sorry, that letter is not in the word')
-                mistakes_made
-        
+                mistakes_made += 1
+    
+    print('The word was '+secret_word+'!')
+    
+    if word_guessed() == True:
+
+        print('You win!')
+    else:
+        print('Game over!')
         
     return None
