@@ -14,22 +14,23 @@ Input data in csv format:
         
     
 Output:
-    FigA1 to Fig An - Number of points in polygon n over time
+    Output+PolysName.png - Number of points in polygon n over time
     FigB - All figures A on a single plot
 
 @author: Kalkberg
 """
 import numpy as np
 import matplotlib.path as path
+import matplotlib.pyplot as plt
 
 # Inputs
 PointsFile = 'NAM_Volc_Min_Max.csv'
-PolysFile = 'Polys.csf'
+PolysFile = 'Polys.csv'
 PolysName = ('Mojave','NV','NVID','NVUT','ORID','ORNV')
 AgeMin = 0
 AgeMax = 36
 AgeInt = 1
-Output = 'Volc'
+Output = 'Uniform_'
 
 # Read in data, cut out headers and redistribute to variables
 Points = np.genfromtxt(PointsFile, delimiter=',')
@@ -45,14 +46,14 @@ PolyNo, PolyLat, PolyLong = Polys[:,0], Polys[:,1], Polys[:,2]
 PointList = []
 
 # Create list of age bins
-AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt+1))
+AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt)+1)
 
 # Append points to an array of data for each polygon
-for i in range(0,PolyNo.max()):
+for i in range(0,int(PolyNo.max())):
     Polygon = np.zeros([0,2]) # Empty polygon for next step
     # Create array defining polygon
     for j in range(0, len(PolyNo)-1):
-        if PolyNo == i:
+        if PolyNo[j] == i:
             Polygon = np.append(Polygon,[[PolyLong[j],PolyLat[j]]],axis=0)
     
     PolyPath = path.Path(Polygon) # Create path using matplotlib.path
@@ -62,10 +63,10 @@ for i in range(0,PolyNo.max()):
     PointLongPoly = []
     
     # Check if points are in the polygon, if so append to list, can also be done as list comprehension
-    for k in range(0,len(PointLat)):
+    for k in range(0,len(PointLat)-1):
         if PolyPath.contains_point((PointLong[k],PointLat[k])) == True:
             PointAgeMinPoly.append(PointAgeMin[k])
-            PointAgeMinPoly.append(PointAgeMax[k])
+            PointAgeMaxPoly.append(PointAgeMax[k])
             PointLatPoly.append(PointLat[k])
             PointLongPoly.append(PointLong[k])
     
@@ -74,27 +75,42 @@ for i in range(0,PolyNo.max()):
                       PointLatPoly,PointLongPoly]) 
 
 # Make plots of sample numbers for each plot
-for m in range(0,PolyNo.max()):
+for m in range(0,int(PolyNo.max())):
     
     AgeRandDist = [] # Create empty list of age counts
-    #Create a list of counts in each age bin
-    for p in AgeBins:
-        for _ in range(10^5): #Repeat 10^5 times to get good PDFs n each bin
-            AgeRand = [] # Set list of generated ages to zero
-            for n in range(0,len(PointList[m*4])): #for each point found in the polygon
-                # Randomly generate numbers for each age interval
-                Age=np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
-                Age.tolist()
-                AgeRand.append(Age)
-            
-            for p in AgeBins:
-                if 
-                AgeRandDist[p].append(AgeRand)
-        
-                
-                
-    # Count number of points in each age interval and save
-    for p in AgeBins:
-                                        
-                                        
-                                                
+
+    for _ in range(10^5): #Repeat 10^5 times to get good PDFs n each bin
+        AgeRand = [] # Set list of generated ages to zero
+        AgeRandBins = [] # List of ages in each bin
+        for n in range(0,len(PointList[m*4])): #for each point found in the polygon
+            # Randomly generate numbers for each age interval
+            Age = np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
+            Age = Age.tolist()
+            AgeRand.append(Age)
+        for p in range(0,len(AgeBins)-2): #Should be rewritten as a list comprehension
+            for n in range(0,len(AgeRand)-1): 
+                if (AgeRand[n] > AgeBins[p]) and (AgeRand[n] < AgeBins[p+1]):
+                    AgeRandBins[p].extend(AgeRand[n])
+            AgeRandDist[p].append(len(AgeRandBins[p])) # Count ages in each bin and append to list
+    
+    # Set stat lists to zero
+    Median = []
+    Mean = []
+    Pctile5 = []
+    Pctile95 = []
+    # Count statistics of each age bin
+    for q in range(0,len(AgeRandDist)-1):
+        Median[q] = np.median(AgeRandDist[q])
+        Mean[q] = np.mean(AgeRandDist[q])
+        Pctile5[q] = np.percentile(AgeRandDist[q],5)
+        Pctile95[q] = np.percentile(AgeRandDist[q],95)
+    
+    # Plot Results
+    f = plt.figure()
+    plt.plot(AgeBins,Median,'r',AgeBins,Mean,'b', 
+             AgeBins,Pctile5,'0.8',AgeBins,Pctile95,'0.8')
+    plt.xlabel('Age (Ma)')
+    plt.ylabel('Counts')
+    plt.title(PolysName[m])
+    plt.savefig(Output+PolysName[m]+'.png',bbox_inches='tight',dpi=300 )
+    plt.close()                                  
