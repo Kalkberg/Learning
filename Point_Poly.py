@@ -77,11 +77,11 @@ for i in range(0,int(PolyNo.max())):
 # Make plots of sample numbers for each plot
 for m in range(0,int(PolyNo.max())):
     
-    AgeRandDist = [] # Create empty list of age counts
+    AgeRandDist = [[]] # Create empty list of age counts
 
     for _ in range(10^5): #Repeat 10^5 times to get good PDFs n each bin
         AgeRand = [] # Set list of generated ages to zero
-        AgeRandBins = [] # List of ages in each bin
+        AgeRandBins = [[]] # List of ages in each bin
         for n in range(0,len(PointList[m*4])): #for each point found in the polygon
             # Randomly generate numbers for each age interval
             Age = np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
@@ -112,5 +112,5 @@ for m in range(0,int(PolyNo.max())):
     plt.xlabel('Age (Ma)')
     plt.ylabel('Counts')
     plt.title(PolysName[m])
-    plt.savefig(Output+PolysName[m]+'.png',bbox_inches='tight',dpi=300 )
+    plt.savefig(Output+PolysName[m]+'.png',bbox_inches='tight',dpi=300)
     plt.close()                                  
