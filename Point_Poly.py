@@ -28,7 +28,7 @@ PolysFile = 'Polys.csf'
 PolysName = ('Mojave','NV','NVID','NVUT','ORID','ORNV')
 AgeMin = 0
 AgeMax = 36
-AgeInt = 0.5
+AgeInt = 1
 Output = 'Volc'
 
 # Read in data, cut out headers and redistribute to variables
@@ -45,7 +45,7 @@ PolyNo, PolyLat, PolyLong = Polys[:,0], Polys[:,1], Polys[:,2]
 PointList = []
 
 # Create list of age bins
-AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt)+1)
+AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt+1))
 
 # Append points to an array of data for each polygon
 for i in range(0,PolyNo.max()):
@@ -77,15 +77,24 @@ for i in range(0,PolyNo.max()):
 for m in range(0,PolyNo.max()):
     
     AgeRandDist = [] # Create empty list of age counts
-    for _ in range(10^5): #Repeat 10^5 times to get good PDFs n each bin
-        AgeRand = [] # Set list of generated ages to zero
-        for n in range(0,len(PointList[m*4])): #for each point found in the polygon
-            # Randomly generate numbers for each age interval
-            Age=np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
-            Age.tolist()
-            AgeRand.append(Age)
-        # Count number of points in each age interval and save
-        for p in AgeBins:
+    #Create a list of counts in each age bin
+    for p in AgeBins:
+        for _ in range(10^5): #Repeat 10^5 times to get good PDFs n each bin
+            AgeRand = [] # Set list of generated ages to zero
+            for n in range(0,len(PointList[m*4])): #for each point found in the polygon
+                # Randomly generate numbers for each age interval
+                Age=np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
+                Age.tolist()
+                AgeRand.append(Age)
+            
+            for p in AgeBins:
+                if 
+                AgeRandDist[p].append(AgeRand)
+        
+                
+                
+    # Count number of points in each age interval and save
+    for p in AgeBins:
                                         
                                         
                                                 
