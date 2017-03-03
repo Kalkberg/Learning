@@ -53,7 +53,7 @@ AgeBinsPlot = np.linspace(AgeMin,AgeMax-AgeInt,(AgeMax/AgeInt))
 for i in range(0,int(PolyNo.max())):
     Polygon = np.zeros([0,2]) # Empty polygon for next step
     # Create array defining polygon
-    for j in range(0, len(PolyNo)-1):
+    for j in range(0, len(PolyNo)):
         if PolyNo[j] == i:
             Polygon = np.append(Polygon,[[PolyLong[j],PolyLat[j]]],axis=0)
     
@@ -80,7 +80,7 @@ for m in range(0,int(PolyNo.max())):
     
     AgeRandDist = [[]]*(len(AgeBins)) # Create empty list of age counts
 
-    for _ in range(0,10^5): #Repeat 10^5 times to get good PDFs in each bin
+    for _ in range(0,10**2): #Repeat 10^5 times to get good PDFs in each bin
         AgeRand = [] # Set list of generated ages to zero
         AgeRandBins = [[]]*(len(AgeBins)) # List of ages in each bin
         for n in range(0,len(PointList[m*4])): #for each point found in the polygon
@@ -88,8 +88,8 @@ for m in range(0,int(PolyNo.max())):
             Age = np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
             Age = Age.tolist()
             AgeRand.append(Age)
-        for p in range(0,len(AgeBins)-2): #Should be rewritten as a list comprehension
-            for n in range(0,len(AgeRand)-1): 
+        for p in range(0,len(AgeBins)-1): #Should be rewritten as a list comprehension
+            for n in range(0,len(AgeRand)): 
                 if (AgeRand[n] > AgeBins[p]) and (AgeRand[n] < AgeBins[p+1]):
                     AgeRandBins[p].extend(AgeRand[n])
             AgeRandDist[p].append(len(AgeRandBins[p])) # Count ages in each bin and append to list
@@ -100,7 +100,7 @@ for m in range(0,int(PolyNo.max())):
     Pctile5 = []
     Pctile95 = []
     # Count statistics of each age bin
-    for q in range(0,len(AgeRandDist)-1):
+    for q in range(0,len(AgeRandDist)):
         Median.append(np.median(AgeRandDist[q]))
         Mean.append(np.mean(AgeRandDist[q]))
         Pctile5.append(np.percentile(AgeRandDist[q],5))
