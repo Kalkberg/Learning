@@ -47,6 +47,7 @@ PointList = []
 
 # Create list of age bins
 AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt)+1)
+AgeBinsPlot = np.linspace(AgeMin,AgeMax-AgeInt,(AgeMax/AgeInt))
 
 # Append points to an array of data for each polygon
 for i in range(0,int(PolyNo.max())):
@@ -77,11 +78,11 @@ for i in range(0,int(PolyNo.max())):
 # Make plots of sample numbers for each plot
 for m in range(0,int(PolyNo.max())):
     
-    AgeRandDist = [[]] # Create empty list of age counts
+    AgeRandDist = [[]]*(len(AgeBins)) # Create empty list of age counts
 
-    for _ in range(10^5): #Repeat 10^5 times to get good PDFs n each bin
+    for _ in range(0,10^5): #Repeat 10^5 times to get good PDFs in each bin
         AgeRand = [] # Set list of generated ages to zero
-        AgeRandBins = [[]] # List of ages in each bin
+        AgeRandBins = [[]]*(len(AgeBins)) # List of ages in each bin
         for n in range(0,len(PointList[m*4])): #for each point found in the polygon
             # Randomly generate numbers for each age interval
             Age = np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
@@ -100,15 +101,15 @@ for m in range(0,int(PolyNo.max())):
     Pctile95 = []
     # Count statistics of each age bin
     for q in range(0,len(AgeRandDist)-1):
-        Median[q] = np.median(AgeRandDist[q])
-        Mean[q] = np.mean(AgeRandDist[q])
-        Pctile5[q] = np.percentile(AgeRandDist[q],5)
-        Pctile95[q] = np.percentile(AgeRandDist[q],95)
+        Median.append(np.median(AgeRandDist[q]))
+        Mean.append(np.mean(AgeRandDist[q]))
+        Pctile5.append(np.percentile(AgeRandDist[q],5))
+        Pctile95.append(np.percentile(AgeRandDist[q],95))
     
     # Plot Results
     f = plt.figure()
-    plt.plot(AgeBins,Median,'r',AgeBins,Mean,'b', 
-             AgeBins,Pctile5,'0.8',AgeBins,Pctile95,'0.8')
+    plt.plot(AgeBinsPlot,Median,'r',AgeBinsPlot,Mean,'b', 
+             AgeBinsPlot,Pctile5,'0.8',AgeBinsPlot,Pctile95,'0.8')
     plt.xlabel('Age (Ma)')
     plt.ylabel('Counts')
     plt.title(PolysName[m])
