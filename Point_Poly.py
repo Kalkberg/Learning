@@ -22,6 +22,7 @@ Output:
 import numpy as np
 import matplotlib.path as path
 import matplotlib.pyplot as plt
+from tqdm import trange
 
 # Inputs
 PointsFile = 'NAM_Volc_Min_Max.csv'
@@ -79,8 +80,10 @@ for i in range(0,int(PolyNo.max())):
 for m in range(0,int(PolyNo.max())):
     
     AgeRandDist = [[] for i in range(len(AgeBins)-1)]# Create empty list of age counts
-
-    for _ in range(0,10**6): #Repeat 10^5 times to get good PDFs in each bin
+    
+    # Randomly generate ages of each sample, given age constrains
+    # Repeat 10^5 times to get good PDFs in each bin
+    for _ in trange(10**5,desc='Processing '+PolysName[m]): 
         AgeRand = [] # Set list of generated ages to zero
         AgeRandBins = [[]for i in range(len(AgeBins)-1)] # List of ages in each bin
         for n in range(0,len(PointList[m*4])): #for each point found in the polygon
@@ -103,8 +106,8 @@ for m in range(0,int(PolyNo.max())):
     for q in range(0,len(AgeRandDist)):
         Median.append(np.median(AgeRandDist[q]))
         Mean.append(np.mean(AgeRandDist[q]))
-        Pctile5.append(np.percentile(AgeRandDist[q],5))
-        Pctile95.append(np.percentile(AgeRandDist[q],95))
+        Pctile5.append(np.percentile(AgeRandDist[q],2.5))
+        Pctile95.append(np.percentile(AgeRandDist[q],97.5))
     
     # Plot Results
     f = plt.figure()
