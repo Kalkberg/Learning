@@ -78,11 +78,11 @@ for i in range(0,int(PolyNo.max())):
 # Make plots of sample numbers for each plot
 for m in range(0,int(PolyNo.max())):
     
-    AgeRandDist = [[]]*(len(AgeBins)) # Create empty list of age counts
+    AgeRandDist = [[] for i in range(len(AgeBins)-1)]# Create empty list of age counts
 
-    for _ in range(0,10**2): #Repeat 10^5 times to get good PDFs in each bin
+    for _ in range(0,10**6): #Repeat 10^5 times to get good PDFs in each bin
         AgeRand = [] # Set list of generated ages to zero
-        AgeRandBins = [[]]*(len(AgeBins)) # List of ages in each bin
+        AgeRandBins = [[]for i in range(len(AgeBins)-1)] # List of ages in each bin
         for n in range(0,len(PointList[m*4])): #for each point found in the polygon
             # Randomly generate numbers for each age interval
             Age = np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
@@ -108,10 +108,14 @@ for m in range(0,int(PolyNo.max())):
     
     # Plot Results
     f = plt.figure()
-    plt.plot(AgeBinsPlot,Median,'r',AgeBinsPlot,Mean,'b', 
-             AgeBinsPlot,Pctile5,'0.8',AgeBinsPlot,Pctile95,'0.8')
+    plt.plot(AgeBinsPlot,Median,'r',label='Median')
+    plt.plot(AgeBinsPlot,Mean,'b',label='Mean')
+    plt.plot(AgeBinsPlot,Pctile5,'0.8', label='95% of samples')
+    plt.plot(AgeBinsPlot,Pctile95,'0.8')
+    plt.legend()
     plt.xlabel('Age (Ma)')
     plt.ylabel('Counts')
+    plt.xlim([AgeMin,AgeMax-AgeInt])
     plt.title(PolysName[m])
-    plt.savefig(Output+PolysName[m]+'.png',bbox_inches='tight',dpi=300)
+    plt.savefig(Output+PolysName[m]+'.png',dpi=300)
     plt.close()                                  

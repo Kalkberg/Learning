@@ -20,9 +20,9 @@ AgeInt = 5
 AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt)+1)
 AgeBinsPlot = np.linspace(AgeMin,AgeMax-AgeInt,(AgeMax/AgeInt))
 
-AgeCount = [[]]*(len(AgeBins)-1)
+AgeCount = [[]for i in range(len(AgeBins)-1)]
 
-for _ in range(10**2):
+for _ in range(10**3):
     
     AgeRand = []
     # Generate a random age for each point
@@ -32,11 +32,18 @@ for _ in range(10**2):
         AgeRand.append(Age)
     
     
-    AgesBinned = [[]]*(len(AgeBins)-1)
+    AgesBinned = [[] for i in range(len(AgeBins)-1)]
     # Divide generated values into bins of each age
-    for j in range(0,len(AgeBins)-1):
-        AgesBinned[j] = [AgeRand[i] for i in range(0,len(AgeRand)) if \
-                   (AgeRand[i] > AgeBins[j]) and (AgeRand[i] < AgeBins[j])] 
+    for i in range(0,len(AgeRand)):    
+        for j in range(0,len(AgeBins)-1):
+            if (AgeRand[i][0] > AgeBins[j]) and (AgeRand[i][0] <AgeBins[j+1]):
+                AgesBinned[j].append(AgeRand[i][0])
+        
+        
+    
+#    for j in range(0,len(AgeBins)-1):
+#        AgesBinned[j] = [AgeRand[i] for i in range(0,len(AgeRand)) if \
+#                   (AgeRand[i] > AgeBins[j]) and (AgeRand[i] < AgeBins[j])] 
         
     # Count number of ages in each bin
     for i in range(0,len(AgeBins)-1):
