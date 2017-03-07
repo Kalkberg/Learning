@@ -10,6 +10,8 @@ Input data in csv format:
     AgeMin - Minmum age to consider
     AgeMax - Maximum age to consider
     AgeInt - Bin size for plotting
+    Dist - Distribution to use for age inputs. Uniform or Gaussian. 
+            Defaults to Normal.
     Output - Stem of name for output data
         
     
@@ -19,19 +21,25 @@ Output:
 
 @author: Kalkberg
 """
+#def Point_Poly(AgeMin,AgeMax,AgeInt,Dist,Output):
+
 import numpy as np
 import matplotlib.path as path
 import matplotlib.pyplot as plt
 from tqdm import trange
 
 # Inputs
-PointsFile = 'NAM_Volc_Min_Max.csv'
+PointsFile = 'NAM_Volc_Min_Max_Cleaned.csv'
 PolysFile = 'Polys.csv'
 PolysName = ('Mojave','NV','NVID','NVUT','ORID','ORNV')
 AgeMin = 0
 AgeMax = 36
-AgeInt = 1
-Output = 'Uniform_'
+#AgeInt = 1
+AgeInt = float(input('Age Int: '))
+#Dist = 'Normal'
+Dist = input('Age Data PDF type: ')
+#Output = 'Gaussian_'
+Output = input('File Root Name: ')
 
 # Read in data, cut out headers and redistribute to variables
 Points = np.genfromtxt(PointsFile, delimiter=',')
@@ -45,6 +53,14 @@ PolyNo, PolyLat, PolyLong = Polys[:,0], Polys[:,1], Polys[:,2]
 # Create empty list of points in each polygon
 # Columns for each polygon are n=AgeMin, n+1=AgeMax, n+2=Lat, n+3=Long
 PointList = []
+
+# Catch instances where Min and Max are reversed, then swap
+for i in range(len(PointAgeMin)):
+    if PointAgeMin[i] > PointAgeMax[i]:
+        a = PointAgeMax[i]
+        PointAgeMax[i] = PointAgeMin[i]
+        PointAgeMin[i] = a
+
 
 # Create list of age bins
 AgeBins = np.linspace(AgeMin,AgeMax,(AgeMax/AgeInt)+1)
@@ -87,11 +103,28 @@ for m in range(0,int(PolyNo.max())):
         AgeRand = [] # Set list of generated ages to zero
         AgeRandBins = [[]for i in range(len(AgeBins)-1)] # List of ages in each bin
         for n in range(0,len(PointList[m*4])): #for each point found in the polygon
-            # Randomly generate numbers for each age interval
-            Age = np.random.uniform(PointList[m*4][n],PointList[m*4+1][n],1)
-            Age = Age.tolist()
-            AgeRand.append(Age)
-        for p in range(0,len(AgeBins)-1): #Should be rewritten as a list comprehension
+            # Catch instances where min and max age are the same
+            if (PointList[m*4][n]) != (PointList[m*4+1][n]):    
+                # Randomly generate numbers for each age interval
+                if Dist == 'Uniform':
+                    Age = np.random.uniform(PointList[m*4][n],
+                                            PointList[m*4+1][n])
+                    Age = Age.tolist() # Returns an array, needs to be a list
+                else:
+                # Assumes ages are reported on 2 sigma level and are symmetric.
+                    Age = [np.random.normal(
+                        np.mean([PointList[m*4][n],
+                                 PointList[m*4+1][n]]),
+                        (PointList[m*4+1][n] - 
+                             np.mean([PointList[m*4][n],
+                                      PointList[m*4+1][n]]))/2)]                      
+            else:
+                Age = [PointList[m*4][n]] # Set age to same as min val
+            
+            AgeRand.append(Age) # Append to list of generated ages
+                       
+        # Count number of ages in each bin
+        for p in range(0,len(AgeBins)-1):
             for n in range(0,len(AgeRand)): 
                 if (AgeRand[n] > AgeBins[p]) and (AgeRand[n] < AgeBins[p+1]):
                     AgeRandBins[p].extend(AgeRand[n])
