@@ -28,6 +28,7 @@ $RECYCLE.BIN/
 *.exe
 *.gif
 *.xlsx
+*.nc
 
 # =========================
 # Operating System Files
