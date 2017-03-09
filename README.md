@@ -13,13 +13,19 @@ MIT_6189* - *Scripts written while working through MIT's open courseware for cou
 
 MomentTensor - Convert strike, dip, and rake to harvard moment tensor solution. Not working.
 
+netCDF_Plot.py - Plots netCDF data. Currently configured to plot dynamic topography derived from Molnar et al., 2015
+
 pdf_writer.py - Learned how to make a table from a bunch of data in LaTeX and ouput it to a PDF.
 
 plotting.py - Learned how to make and save basic plots to PDF format.
 
 Plot_Anim.py - Takes a csv of age, lat, and long data and makes an animation with a geographic basemap.
 
-Plot_Anim_Hexbin.py - Same as Plot_Anim but makes hexbins of data. Implementation is different as hexbin is not iterable for matplotlib's animation toolbox. Uses ffmpeg executable instead. Includes sending a command to ffmpeg which includes user input and is therefore a huge security issue. Since there is no windows version of ffmpeg for python at the moment, there may not be a workaround. 
+Plot_Anim_Hexbin.py - Same as Plot_Anim but makes hexbins of data. Implementation is different as hexbin is not iterable for matplotlib's animation toolbox. Instead prints each frame and combines them into a movie using the moviepy library.
+
+Plot_Anim_Hexbin_median_Val.py - Same as Plot_Anim_Hexbin but calculates median value in each hexbin.
+
+Point_Poly.py - Takes a list of polygons, and a list of data with min/max ages, and lat/long data. Then estimates requency of samples in each polygon.
 
 PTBAxes - obtain P, T, and B axes orientations from strike, dip and rake data.
 
