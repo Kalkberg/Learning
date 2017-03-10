@@ -45,8 +45,8 @@ from moviepy.editor import *
 #
 
 #Input paramaters for debuging
-data = 'NAM_Ig_Min_Max_SiO2.csv'
-output = 'NAM_Ig_Min_Max_SiO2'
+data = 'NAM_Ig_Alk.csv'
+output = 'NAM_Ig_Alk'
 workdir = 'D:/GitHub/Learning/'
 lat_min = 29
 lat_max = 50
@@ -57,8 +57,8 @@ age_max_cut = 144
 hexsize = (25, 20)
 step = 2 # Frames per Myr
 plt_int = 1 # 0.5 x Myr of data to count for each cell
-min_dens = 30
-max_dens = 90 # Defines maximum density expected in dataset
+min_dens = -30
+max_dens = 80 # Defines maximum density expected in dataset
 fps_mov = 4 # Fps of final video
 
 # Move to working directory
@@ -146,7 +146,7 @@ for i in range(0,int(age_max.max())*step,1):
    
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
-    cb.set_label('Median SiO2')
+    cb.set_label('Median Δ Alkalinity')
     
     # Make text box
     time_text = ax.text(0.035, 0.035, 'Age = %s Ma' %int(age_int), 

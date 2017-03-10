@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
 #Read in data
-file = 'bandpass_topo2_clip.nc'
+file = 'bandpass_topo2_clip4.nc'
 filedata = Dataset(file, moder='r')
 
 # Pull variables
@@ -61,5 +61,5 @@ cbar.set_label('Dynamic Topography (m)')
 # Add title and save
 plt.title('Dynamic Topography from Molnar et al., 2015')
 
-plt.savefig('Dynamic_topo5.png',dpi=300)
+plt.savefig('Dynamic_topo6.png',dpi=300)
 plt.show()
