@@ -26,8 +26,10 @@ fig.set_canvas(plt.gcf().canvas)
 # Set up stuff to plot during animation
 Ball, = plt.plot([],[],marker='o',color='k', linestyle='none', markersize=5)
 time_text = plt.text(4, 10.4, '', backgroundcolor='w')
+#plt.axis.get_xaxis().set_ticklabels([])
 #plt.axes.get_xaxis().set_visible(False)
 #plt.axes.get_yaxis().set_visible(False)
+
 
 # Set up axes
 plt.xlim(0,10)
