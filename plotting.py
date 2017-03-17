@@ -5,11 +5,17 @@ Created by Petr Yakovlev, 2016
 import numpy as np
 import matplotlib.pyplot as plot
 
-x =np.linspace(-2 * np.pi,2 * np.pi, 60)
-y = np.sin(x)
+# Input paramaters
+data = 'Tibet_All.csv'
+output = 'Tibet_All'
 
-plot.plot(x,y, 'bo--')
-plot.title('Sine Curve')
-plot.xlabel('x-axis'); plot.ylabel('y-axis')
+# Read in data, cut out headers and redistribute
+data = np.genfromtxt(data, delimiter=',')
+data = np.delete(data, (0), axis=0)
+age, lat, long = data[:,0], data[:,1], data[:,2]
+
+plot.plot(age,lat, 'ko')
+plot.title('Tibet Volcanicsm')
+plot.xlabel('Age (Ma)'); plot.ylabel('Latitude')
 #plot.show()
-plot.savefig('plot.pdf', bbox_inches='tight')
+plot.savefig(output+'.pdf', bbox_inches='tight')
