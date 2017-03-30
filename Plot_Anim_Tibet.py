@@ -44,18 +44,33 @@ from mpl_toolkits.basemap import Basemap
 #
 # Input paramaters
 data = 'Tibet_Dated.csv'
-output = 'Tibet_Dated'
+output = 'Tibet_Dated2'
+age_min = 0
+age_max = 60
+
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(data, delimiter=',')
 data = np.delete(data, (0), axis=0)
-age, lat, long = data[:,0], data[:,1], data[:,2]
+age_in, lat_in, long_in = data[:,0], data[:,1], data[:,2]
 
 # Dummy Data
 #size = 300
 #lat = np.random.uniform(34,48,size)
 #long = np.random.uniform(-117,-124,size)
 #age = np.random.uniform(1,100,size)
+
+# Create blank arrays to populate later
+age = np.array([])
+lat = np.array([])
+long = np.array([])
+
+# Cut data outside time of interest so hexplot polygons are same size
+for i in range(len(age_in)):
+    if (age_in[i] > age_min and age_in[i] < age_max):
+        age = np.r_[age, age_in[i]]
+        lat = np.r_[lat, lat_in[i]]
+        long = np.r_[long, long_in[i]]
 
 
 # Parameters that affect animation
