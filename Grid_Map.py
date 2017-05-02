@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Takes a set of points with values at lat and long coordinates
-Creates a map in region of interest
-
+Takes a set of points with values at lat and long coordinates and creates a map
+in the region of interest
 
 @author: Kalkberg
 """

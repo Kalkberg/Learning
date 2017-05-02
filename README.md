@@ -11,6 +11,8 @@ extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and 
 
 Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descriptions and makes a KMZ of the points and metadata. Currently formatted to produce field trips for the Tobacco Root Gelogical Society.
 
+Grid_Map.py - Takes a set of points with values at lat and long coordinates and creates a map in the region of interest.
+
 MIT_6189* - *Scripts written while working through MIT's open courseware for course 6.189 - A gentle introduction to Python
 
 MomentTensor - Convert strike, dip, and rake to harvard moment tensor solution. Not working.
