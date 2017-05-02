@@ -36,7 +36,7 @@ import scipy.ndimage
 #    error()    
 
 data = 'Elliot_Trip_Waypoints.txt'
-output = 'Elliott_Trip'
+output = 'Elliott&Lonn_Trip'
 
 # Read in data
 lat = []
@@ -61,21 +61,21 @@ long = np.asarray([float(i) for i in long])
 # Read the dimentions of each image, then calculate width and heights to pass
 # on to Google Earth which will have a long dimention close to that specified 
 # by the size tag and preserve image aspect ratio
-height = []
-width = []
-size = 500 # Largest dimention of image in pixels
-for i in range(len(image)):
-    if len(image[i]) > 0:
-        imheight, imwidth, c = scipy.ndimage.imread(image[i]).shape
-        if imheight > imwidth:
-            height.append(int(imheight/(imheight/size)))
-            width.append(int(imwidth/(imheight/size)))
-        else:
-            height.append(int(imheight/(imwidth/size)))
-            width.append(int(imwidth/(imwidth/size)))
-    else:# Need to pad with zeros to keep indexing same as source
-        height.append(0) 
-        width.append(0)
+#height = []
+#width = []
+#size = 500 # Largest dimention of image in pixels
+#for i in range(len(image)):
+#    if len(image[i]) > 0:
+#        imheight, imwidth, c = scipy.ndimage.imread(image[i]).shape
+#        if imheight > imwidth:
+#            height.append(int(imheight/(imheight/size)))
+#            width.append(int(imwidth/(imheight/size)))
+#        else:
+#            height.append(int(imheight/(imwidth/size)))
+#            width.append(int(imwidth/(imwidth/size)))
+#    else:# Need to pad with zeros to keep indexing same as source
+#        height.append(0) 
+#        width.append(0)
 
 # Echo progress
 print("Making Google Earth Files...")
@@ -133,12 +133,16 @@ for i in range(len(lat)):
     kml.write('\t\t<name>%s</name>\n'
               %name[i])
     kml.write('\t\t<description>\n')
+#    kml.write('\t\t\t%s'%descrip[i])
+#    kml.write('\t\t\t<img src="Images/%s"/>' %image[i])
     kml.write('\t\t<![CDATA[\n')
     kml.write('\t\t%s<p>\n' %descrip[i]) # write text desciption
     if len(image[i]) > 0: # add an image if it exists
-        kml.write('\t\t\t<a href="Images/%s">\n' %image[i])
-        kml.write('\t\t\t\t<img src="Images/%s" width="%s" height="%s">\n' 
-                  %(image[i],width[i],height[i]))
+#        kml.write('\t\t\t<a href="Images/%s">\n' %image[i])
+#        kml.write('\t\t\t\t<img src="Images/%s" width="%s" height="%s">\n' 
+#                  %(image[i],width[i],height[i]))
+        kml.write('\t\t\t<a href="%s">\n' %image[i])
+        kml.write('\t\t\t\t<img src="%s", height=500>\n' %image[i])        
         kml.write('\t\t\t</a>\n')
     kml.write('\t\t]]>\n') # close CDATA tag
     kml.write('\t\t</description>/n')
@@ -157,9 +161,9 @@ print("Writing KMZ...")
 
 # Create kmz file
 z = zipfile.ZipFile(output+'.kmz', 'w', zipfile.ZIP_DEFLATED)
-for i in range(len(image)):
-    if len(image[i]) > 0: # Don't write image files if they don't exist
-        z.write(image[i],'Images\\'+image[i])
+#for i in range(len(image)):
+#    if len(image[i]) > 0: # Don't write image files if they don't exist
+#        z.write(image[i],'Images\\'+image[i])
 z.write('trgs_logo.gif','Images\\trgs_logo.gif')
 z.write('icon.png','Images\\icon.png')
 z.write(output+'.kml')
