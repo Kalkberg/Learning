@@ -9,6 +9,8 @@ ColorRamp.py - Learned how to make custom color ramps. Code mainly sourced from 
 
 extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and renames files for use in WIN5SAR.
 
+Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descriptions and makes a KMZ of the points and metadata. Currently formatted to produce field trips for the Tobacco Root Gelogical Society.
+
 MIT_6189* - *Scripts written while working through MIT's open courseware for course 6.189 - A gentle introduction to Python
 
 MomentTensor - Convert strike, dip, and rake to harvard moment tensor solution. Not working.
