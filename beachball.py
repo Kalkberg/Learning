@@ -194,7 +194,7 @@ kml.write('\t<ScreenOverlay>\n'
           '\t\t<size x="0" y="0" xunits="fraction" yunits="fraction"/>\n'
           '\t</ScreenOverlay>\n')
 
-# Gnerate icon styles for each beachball
+# Generate icon styles for each beachball
 for i in range(0,data.shape[0]):
     kml.write('\t<Style id="%s">\n' %i)
     kml.write('\t\t<IconStyle>\n')
@@ -203,7 +203,7 @@ for i in range(0,data.shape[0]):
     kml.write('\t\t\t<Icon>\n')
     kml.write('\t\t\t\t<href>Ballbin/%s.png</href>\n' %i)
     kml.write('\t\t\t</Icon>\n')
-    kml.write('\t\t\t</IconStyle>\n')
+    kml.write('\t\t</IconStyle>\n')
     kml.write('\t</Style>\n')
     
 # Write placemarks
