@@ -1,6 +1,6 @@
 # Learning
 Scripts generated while learning Python. In rare cases, actually useful for something.
-All files in this repository are licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. 
+All files in this repository are licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License, unless noted otherwise. 
 To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/ 
 or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
@@ -13,6 +13,8 @@ ColorRamp.py - Learned how to make custom color ramps. Code mainly sourced from 
 extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and renames files for use in WIN5SAR.
 
 Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descriptions and makes a KMZ of the points and metadata. Currently formatted to produce field trips for the Tobacco Root Gelogical Society.
+
+grd_cut.py - Cuts .grd files using GMT
 
 Grid_Map.py - Takes a set of points with values at lat and long coordinates and creates a map in the region of interest.
 
