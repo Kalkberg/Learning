@@ -42,8 +42,8 @@ for i in range(0,len(dirs)):
     files = glob.glob('*.LED')
     
     # Write submaster file name first. Submaster always has lower #
-    if int(files[0][:-4])>int(files[1][:-4]):
-        temp = files
+    if int(files[0][:-4]) > int(files[1][:-4]):
+        temp = files[:]
         files[0] = temp[1]
         files[1] = temp[0]
     
