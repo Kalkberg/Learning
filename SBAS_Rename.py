@@ -40,6 +40,13 @@ dirs = os.listdir('.')
 for i in range(0,len(dirs)):
     os.chdir(dirs[i])
     files = glob.glob('*.LED')
+    
+    # Write submaster file name first. Submaster always has lower #
+    if int(files[0][:-4])>int(files[1][:-4]):
+        temp = files
+        files[0] = temp[1]
+        files[1] = temp[0]
+    
     shutil.copy('corr.grd',
                 workdir+'corr_'+files[0][:-4]+'_'+files[1][0:-4]+'.grd')
     shutil.copy('unwrap.grd',
