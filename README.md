@@ -34,5 +34,6 @@ Plot_Anim_Hexbin_median_Val.py - Same as Plot_Anim_Hexbin but calculates median 
 
 Point_Poly.py - Takes a list of polygons, and a list of data with min/max ages, and lat/long data. Then estimates requency of samples in each polygon.
 
-PTBAxes - obtain P, T, and B axes orientations from strike, dip and rake data.
+PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data.
 
+SBAS_Rename.py - Helper script to renames GMT5SAR files for SBAS after making a stack of interferograms.
