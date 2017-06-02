@@ -16,6 +16,9 @@ Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descripti
 
 grd_cut.py - Cuts .grd files using GMT
 
+grd_convert - Helper script for taking velocity files produced by GMT5SAR, and generating
+NetCDF grids with lat/long coordinates
+
 Grid_Map.py - Takes a set of points with values at lat and long coordinates and creates a map in the region of interest.
 
 MIT_6189* - *Scripts written while working through MIT's open courseware for course 6.189 - A gentle introduction to Python
