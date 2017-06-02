@@ -44,4 +44,6 @@ for i in range(0,len(dirs)):
                 workdir+'corr_'+files[0][:-4]+'_'+files[1][0:-4]+'.grd')
     shutil.copy('unwrap.grd',
                 workdir+'unwrap_'+files[0][:-4]+'_'+files[1][0:-4]+'.grd')
+    shutil.copy('phase.grd',
+                workdir+'phase_'+files[0][:-4]+'_'+files[1][0:-4]+'.grd')
     os.chdir('..')
