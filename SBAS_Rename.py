@@ -31,6 +31,8 @@ else:
     print("Error: Wrong number of input arguments!")
     error()   
 
+#workdir = '/home/pyakovlev/INSAR/Virginia_City'
+
 # Move to folder of interferograms
 os.chdir(workdir+'/intf/')
 dirs = os.listdir('.')
@@ -42,3 +44,4 @@ for i in range(0,len(dirs)):
                 workdir+'corr_'+files[0][:-4]+'_'+files[1][0:-4]+'.grd')
     shutil.copy('unwrap.grd',
                 workdir+'unwrap_'+files[0][:-4]+'_'+files[1][0:-4]+'.grd')
+    os.chdir('..')
