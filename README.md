@@ -27,6 +27,8 @@ netCDF_Plot.py - Plots netCDF data. Currently configured to plot dynamic topogra
 
 pdf_writer.py - Learned how to make a table from a bunch of data in LaTeX and ouput it to a PDF.
 
+Plate_Flexure.py - Attempts to constrain half width of plate flexure caused by Yellowstone Hotspot.
+
 plotting.py - Learned how to make and save basic plots to PDF format.
 
 Plot_Anim.py - Takes a csv of age, lat, and long data and makes an animation with a geographic basemap.
@@ -39,4 +41,4 @@ Point_Poly.py - Takes a list of polygons, and a list of data with min/max ages, 
 
 PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data.
 
-SBAS_Rename.py - Helper script to renames GMT5SAR files for SBAS after making a stack of interferograms.
+SBAS_Rename.py - Helper script to rename GMT5SAR files for SBAS after making a stack of interferograms.
