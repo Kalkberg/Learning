@@ -12,6 +12,8 @@ extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and 
 
 Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descriptions and makes a KMZ of the points and metadata. Currently formatted to produce field trips for the Tobacco Root Gelogical Society.
 
+FTP_Download.py - Simple script to browse an FTP website, and download some files.
+
 grd_cut.py - Cuts .grd files using GMT
 
 grd_convert - Helper script for taking velocity files produced by GMT5SAR, and generating
