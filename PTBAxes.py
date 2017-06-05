@@ -8,7 +8,9 @@ Adapted from MATLAB scripts found in SEIZMO toolbox by Garrett Euler:
 https://github.com/g2e
 http://epsc.wustl.edu/~ggeuler/codes/m/seizmo/
 
-@author: pyakovlev
+No licence applies to this derivative work.
+
+@author: Kalkberg
 """
 import numpy as np
 
