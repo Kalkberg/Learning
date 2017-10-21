@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Simple script to take every nth frame out of a video as a jpeg
+Tosses out blurry images
 
 Author:
 @ Kalkberg
@@ -10,9 +11,9 @@ Requires:
 """
 import cv2
 
-video = "cup.mp4"
+video = "indian.mp4"
 n = 30
-
+blurthresh = 100 # Threshold for determining if image is blurry, adjust as needed
 vidcap = cv2.VideoCapture(video)
 
 # count number of frames in video
@@ -30,4 +31,8 @@ while count < length:
     
     # If frame number divisible by n, save it as a jpg
     if count % n == 0:
-        cv2.imwrite(video[:-4] + "_frame%d.jpg" % count, frame)
+        
+        # Check if imaage is blurry, if not, write
+        if cv2.Laplacian(frame, cv2.CV_64F).var() > blurthresh:
+        
+            cv2.imwrite(video[:-4] + "frame%d.jpg" % count, frame)
