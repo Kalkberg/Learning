@@ -14,6 +14,8 @@ Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descripti
 
 FTP_Download.py - Simple script to browse an FTP website, and download some files.
 
+frame_cut.py - Saves every nth frame of a video as a jpg
+
 grd_cut.py - Cuts .grd files using GMT
 
 grd_convert - Helper script for taking velocity files produced by GMT5SAR, and generating
