@@ -5,6 +5,8 @@ Simple script to take every nth frame out of a video as a jpeg
 Author:
 @ Kalkberg
 
+Requires:
+    OpenCV
 """
 import cv2
 
