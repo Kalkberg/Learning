@@ -2,6 +2,8 @@
 Scripts generated while learning Python. In rare cases, actually useful for something.
 Unless noted otherwise, all scripts are licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+Age_Freq.py - Shows probability of age distributions given a set of min and max ages
+
 args_parser.py - Learned how to parse input arguments.
 
 beachball.py - Makes a KMZ of moment tensor solutions from input csv of earthquake data. Currently configured for the Montana Regional Seismic Network.
@@ -26,6 +28,8 @@ Grid_Map.py - Takes a set of points with values at lat and long coordinates and 
 MIT_6189* - *Scripts written while working through MIT's open courseware for course 6.189 - A gentle introduction to Python
 
 MomentTensor - Convert strike, dip, and rake to harvard moment tensor solution. Not working.
+
+multithreading - Learned how to do basic multithreading
 
 netCDF_Plot.py - Plots netCDF data. Currently configured to plot dynamic topography derived from Molnar et al., 2015
 
