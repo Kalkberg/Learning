@@ -95,7 +95,7 @@ def RandomAge(PointList,AgeBins):
         return AgeRandDistOut,
 
 # Run above function in paralell
-AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100)(delayed(RandomAge)(PointList,AgeBins) for i in range(10^1))
+AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100)(delayed(RandomAge)(PointList,AgeBins) for i in range(10**5))
 #AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100, backend='threading')(delayed(RandomAge)(PointList,AgeBins) for i in range(10^1))
 AgeRandDist = np.squeeze(AgeRandDist)
 
