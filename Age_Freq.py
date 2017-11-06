@@ -7,6 +7,7 @@ Input data in csv format:
     AgeMin - Minmum age to consider
     AgeMax - Maximum age to consider
     AgeInt - Bin size for plotting
+    Iterations - Number of times to iterate to generate distributions
     Dist - Distribution to use for age inputs. Uniform or Gaussian. 
             Defaults to Gaussian.
     Output - Stem of name for output data
@@ -30,6 +31,7 @@ PointsFile = 'NAM_Volc_Min_Max_Cleaned.csv'
 AgeMin = 0
 AgeMax = 66
 AgeInt = 1
+Iterations = 10**1
 #AgeInt = float(input('Age Int: '))
 Dist = 'Normal'
 #Dist = input('Age Data PDF type: ')
@@ -52,18 +54,15 @@ for i in range(len(PointAgeMin)):
 AgeBins = np.linspace(AgeMin,AgeMax,int((AgeMax/AgeInt)+1))
 AgeBinsPlot = np.linspace(AgeMin,AgeMax-AgeInt,int(AgeMax/AgeInt))
 
-AgeRandDist = [[] for i in range(len(AgeBins)-1)]# Create empty list of age counts
-
-#Add Mins and Maxes to the same list for iteration
-PointList = []
-PointList.extend([PointAgeMin,PointAgeMax]) 
+#Add Mins and Maxes to the same numpy array for iteration
+PointList = np.array([PointAgeMin,PointAgeMax])
 
 # Randomly generate ages of each sample, given age constraints
 # Repeat 10^5 times to get good PDFs in each bin
 def RandomAge(PointList,AgeBins):
-        AgeRand = [] # Set list of generated ages to zero
-        AgeRandBins = [[]for i in range(len(AgeBins)-1)] # List of ages in each bin
-        AgeRandDistOut = [[] for i in range(len(AgeBins)-1)] # List internal to loop
+        AgeRand = np.zeros([len(PointList[0])]) # Set list of generated ages to zero
+        AgeRandBins = np.zeros([len(AgeBins)-1,len(PointList[0])]) # Array of ages in each bin
+        AgeRandDistOut = np.zeros(len(AgeBins)-1) # Array of age counts internal to loop
         for n in range(len(PointList[0])): #for each point
             # Catch instances where min and max age are the same
             if (PointList[0][n]) != (PointList[1][n]):    
@@ -71,32 +70,31 @@ def RandomAge(PointList,AgeBins):
                 if Dist == 'Uniform':
                     Age = np.random.uniform(PointList[0][n],
                                             PointList[1][n])
-                    Age = Age.tolist() # Returns an array, needs to be a list
                 else:
                 # Assumes ages are reported on 2 sigma level and are symmetric.
-                    Age = [np.random.normal(
+                    Age = np.random.normal(
                         np.mean([PointList[0][n],
                                  PointList[1][n]]),
                         abs((PointList[0][n] - 
                              np.mean([PointList[0][n],
-                                      PointList[1][n]]))/2))]                      
+                                      PointList[1][n]]))/2))                      
             else:
-                Age = [PointList[0][n]] # Set age to same as min val
+                Age = PointList[0][n] # Set age to same as min val
             
-            AgeRand.append(Age) # Append to list of generated ages
+            AgeRand[n] = Age # Append to list of generated ages
                        
         # Count number of ages in each bin
-        for p in range(0,len(AgeBins)-1):
-            for n in range(0,len(AgeRand)): 
+        for p in range(len(AgeBins)-1):
+            for n in range(len(AgeRand)): 
                 if (AgeRand[n] > AgeBins[p]) and (AgeRand[n] < AgeBins[p+1]):
-                    AgeRandBins[p].extend(AgeRand[n])
-            AgeRandDistOut[p].append(len(AgeRandBins[p])) # Count ages in each bin and append to list
+                    AgeRandBins[p][n] = 1
+            AgeRandDistOut[p] =  np.sum(AgeRandBins[p]) # Count ages in each bin and append to list
         
         return AgeRandDistOut,
 
 # Run above function in paralell
-AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100)(delayed(RandomAge)(PointList,AgeBins) for i in range(10**5))
-#AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100, backend='threading')(delayed(RandomAge)(PointList,AgeBins) for i in range(10^1))
+#AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100)(delayed(RandomAge)(PointList,AgeBins) for i in range(Iterations))
+AgeRandDist  = Parallel(n_jobs=NumCores, verbose=100, backend='threading')(delayed(RandomAge)(PointList,AgeBins) for i in range(Iterations))
 AgeRandDist = np.squeeze(AgeRandDist)
 
 # Set stat lists to zero
