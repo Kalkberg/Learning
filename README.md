@@ -2,17 +2,15 @@
 Scripts generated while learning Python. In rare cases, actually useful for something.
 Unless noted otherwise, all scripts are licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-Age_Freq.py - Shows probability of age distributions given a set of min and max ages
-
 args_parser.py - Learned how to parse input arguments.
 
-beachball.py - Makes a KMZ of moment tensor solutions from input csv of earthquake data. Currently configured for the Montana Regional Seismic Network.
+batch_project_raster.py - ArcPY document for batch projection of images in a set directory
+
+clicker.py - Sends a left click comand at a given interval on set keypress
 
 ColorRamp.py - Learned how to make custom color ramps. Code mainly sourced from StackOverflow answer linked in code.
 
 extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and renames files for use in WIN5SAR.
-
-Field_Trip_KMZ.py - Takes a csv of lats, longs, point names, and point descriptions and makes a KMZ of the points and metadata. Currently formatted to produce field trips for the Tobacco Root Gelogical Society.
 
 FTP_Download.py - Simple script to browse an FTP website, and download some files.
 
@@ -20,8 +18,7 @@ frame_cut.py - Saves every nth frame of a video as a jpg
 
 grd_cut.py - Cuts .grd files using GMT
 
-grd_convert - Helper script for taking velocity files produced by GMT5SAR, and generating
-NetCDF grids with lat/long coordinates
+grd_convert - Helper script for taking velocity files produced by GMT5SAR, and generating NetCDF grids with lat/long coordinates
 
 Grid_Map.py - Takes a set of points with values at lat and long coordinates and creates a map in the region of interest.
 
@@ -39,13 +36,7 @@ Plate_Flexure.py - Attempts to constrain half width of plate flexure caused by Y
 
 plotting.py - Learned how to make and save basic plots to PDF format.
 
-Plot_Anim.py - Takes a csv of age, lat, and long data and makes an animation with a geographic basemap.
-
-Plot_Anim_Hexbin.py - Same as Plot_Anim but makes hexbins of data. Implementation is different as hexbin is not iterable for matplotlib's animation toolbox. Instead prints each frame and combines them into a movie using the moviepy library.
-
-Plot_Anim_Hexbin_median_Val.py - Same as Plot_Anim_Hexbin but calculates median value in each hexbin.
-
-Point_Poly.py - Takes a list of polygons, and a list of data with min/max ages, and lat/long data. Then estimates requency of samples in each polygon.
+Point_Map.py - Plots points on a map using basemap
 
 PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data.
 
