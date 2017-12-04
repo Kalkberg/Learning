@@ -4,7 +4,7 @@ Created on Tue Jan 24 11:29:59 2017
 
 Script to plot Lat Long data over a time interval.
 
-Made and currently set to plot volcanic data from North America.
+Made and currently set to plot volcanic data from Tibet.
 
 @author: Kalkberg
 """
@@ -45,21 +45,21 @@ from moviepy.editor import *
 #
 
 #Input paramaters for debuging
-data = 'Tibet_All_Alk.csv'
-output = 'Tibet_All_Alk'
+data = 'Tibet_Chapman_MgO.csv'
+output = 'Tibet_Chapman_MgO'
 workdir = 'D:/GitHub/Learning/'
 lat_min = 27
 lat_max = 38
 long_min = 76
 long_max = 100
 age_min_cut = 0
-age_max_cut = 60
+age_max_cut = 145
 hexsize = (25, 20)
-step = 2 # Frames per Myr
+step = 1 # Frames per Myr
 plt_int = 4 # 0.5 x Myr of data to count for each cell
-min_dens = -20
-max_dens = 60 # Defines maximum density expected in dataset
-fps_mov = 4 # Fps of final video
+min_dens = 0
+max_dens = 20 # Defines maximum density expected in dataset
+fps_mov = 2 # Fps of final video
 
 # Move to working directory
 os.chdir(workdir)
@@ -116,17 +116,14 @@ for i in range(0,int(age_max.max())*step,1):
             rsphere=(6378137.00,6356752.3142),\
             resolution='i',area_thresh=1000.,projection='lcc',\
             lat_1=22.,lat_2=42,lat_0=33,lon_0=87.)
-
-    m.drawcountries(linewidth=0.5, linestyle='solid', color='.4')
-    m.drawstates(linewidth=0.5, linestyle='solid', color='.4')
-    m.drawparallels(np.arange(28.,40.,4.), linewidth=.75, 
-                    labels=[1, 0, 0, 0], color='.4')
-    m.drawmeridians(np.arange(78.,96.,4.), linewidth=.75, 
-                    labels=[0, 0, 0, 1], color='.4')
-    m.drawmapboundary(fill_color='white', color='.4')
     m.shadedrelief()
-    plt.title('Tibet Volcanism')
-    plt.tight_layout()
+    m.drawcoastlines(linewidth=0.5, color='0.8')
+    m.drawcountries(linewidth=0.5, linestyle='solid', color='0.8')
+    m.drawparallels(np.arange(28.,40.,4.), linewidth=.75, 
+                    labels=[1, 0, 0, 0], color='0')
+    m.drawmeridians(np.arange(78.,96.,4.), linewidth=.75, 
+                    labels=[0, 0, 0, 1], color='0')
+    plt.title('Western US Igneous Activity')
     
     # Collect data for this time interval
     x_plot = np.array([x[j] for j in range(0,len(age_max)) \
@@ -152,8 +149,9 @@ for i in range(0,int(age_max.max())*step,1):
    
     # Make color bar
     cb = fig.colorbar(hb_plot, ax=ax)
-    cb.set_label('Median Δ Alkalinity')
-    
+#    cb.set_label('Median Δ Alkalinity')
+    cb.set_label('Median MgO')
+     
     # Make text box
     time_text = ax.text(0.035, 0.035, 'Age = %s Ma' %int(age_int), 
                     transform=ax.transAxes, backgroundcolor='w')

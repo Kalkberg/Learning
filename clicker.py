@@ -12,7 +12,7 @@ mouse = Controller()
 
 def keepclicking():
     mouse.click(Button.left, 1)
-    time.sleep(.4)
+    time.sleep(.5)
 
 def on_press(key):
     try:
@@ -21,10 +21,9 @@ def on_press(key):
             mouse.release(Button.left)
         elif format(key.char) == 'e': #double click on e
             mouse.click(Button.left, 2)
-        elif format(key.char) == 'r': #repeatedly click on r
+        elif format(key.char) == 'r': #click 5 times with 1.5 sec delay on r
             for i in range(8):
                 keepclicking()
-#        elif format(key.char) == 't':
     except AttributeError:
         pass
 

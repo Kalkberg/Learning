@@ -43,10 +43,10 @@ from mpl_toolkits.basemap import Basemap
 #os.chdir(workdir)
 #
 # Input paramaters
-data = 'Tibet_Dated.csv'
-output = 'Tibet_Dated2'
+data = 'Tibet_Chapman.csv'
+output = 'Tibet_Chapman'
 age_min = 0
-age_max = 60
+age_max = 145
 
 
 # Read in data, cut out headers and redistribute
@@ -99,15 +99,16 @@ m = Basemap(width=1500000,height=1500000,
 #            urcrnrlon=(lat.max() + 0.1*lat.max()),
 #            lat_ts=lat.mean(),resolution='l')
 #m.drawcoastlines(linewidth=0.5, color='.4')
-m.drawcountries(linewidth=0.5, linestyle='solid', color='.4')
-m.drawstates(linewidth=0.5, linestyle='solid', color='.4')
-m.drawparallels(np.arange(28.,40.,4.), linewidth=.75, 
-                labels=[1, 1, 0, 0], color='.4')
-m.drawmeridians(np.arange(78.,96.,4.), linewidth=.75, 
-                labels=[0, 0, 0, 1], color='.4')
-m.drawmapboundary(fill_color='white', color='.4')
+m.drawcountries(linewidth=0.5, linestyle='solid', color='0')
+m.drawstates(linewidth=0.5, linestyle='solid', color='0')
 m.shadedrelief()
-plt.title('Tibet Volcanism')
+m.drawparallels(np.arange(28.,40.,4.), linewidth=.75, 
+                labels=[1, 1, 0, 0], color='0')
+m.drawmeridians(np.arange(78.,96.,4.), linewidth=.75, 
+                labels=[0, 0, 0, 1], color='0')
+#m.drawmapboundary(fill_color='white', color='0')
+
+plt.title('Tibet Igneous Activity')
 plt.tight_layout()
 
 # Convert data to projection coordinates

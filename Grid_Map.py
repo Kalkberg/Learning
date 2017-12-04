@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 # Inputs
 Lat_Bound = (44,50) # Min and max latitude to plot
 Long_Bound = (-118,-102) # Min and max longitude to plot
-In = 'NAM_crustal_thickness_error.csv' # Name of input file
-Out = 'Crustal_Thickness' # Stem name of output file
+In = 'Tibet_New_Points.csv' # Name of input file
+Out = 'Locations' # Stem name of output file
 
 # Read in data, cut out headers and redistribute
 data = np.genfromtxt(In, delimiter=',')
