@@ -22,8 +22,6 @@ grd_convert - Helper script for taking velocity files produced by GMT5SAR, and g
 
 Grid_Map.py - Takes a set of points with values at lat and long coordinates and creates a map in the region of interest.
 
-Histogram.py - Creates a color coded stacked histogram using pandas and matplotlib.
-
 MIT_6189* - *Scripts written while working through MIT's open courseware for course 6.189 - A gentle introduction to Python
 
 MomentTensor - Convert strike, dip, and rake to harvard moment tensor solution. Not working.
@@ -43,5 +41,3 @@ Point_Map.py - Plots points on a map using basemap
 PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data.
 
 SBAS_Rename.py - Helper script to rename GMT5SAR files for SBAS after making a stack of interferograms.
-
-Vector_Map.py - Plots vectors on a map.
