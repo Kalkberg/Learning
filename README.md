@@ -44,4 +44,6 @@ PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data
 
 SBAS_Rename.py - Helper script to rename GMT5SAR files for SBAS after making a stack of interferograms.
 
-Vector_Map.py - Plots vectors on a map.
+Vector_Map.py - Plot vectors on a map using pandas and matplotlib.
+
+Vector_Map_YS.py - Plot vectors on a map using pandas and matplotlib. Set up for plotting GPS velocity vectors near Yellowstone, and calculating vectors in the Snake River Plain Reference Frame.
