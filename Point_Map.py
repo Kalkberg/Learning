@@ -18,6 +18,10 @@ data = np.genfromtxt(In, delimiter=',')
 data = np.delete(data, (0), axis=0)
 lat, long = data[:,0], data[:,1]
 
+# Remove any nan values
+lat = lat[~np.isnan(lat)]
+long = long[~np.isnan(long)]
+
 # Set up map boundaries
 Lat_Bound = (np.min(lat),np.max(lat)) # Min and max latitude to plot
 Long_Bound = (np.min(long),np.max(long)) # Min and max longitude to plot
@@ -40,7 +44,7 @@ m.drawparallels(np.arange(Lat_Bound[0],Lat_Bound[1],
 m.drawmeridians(np.arange(Long_Bound[0],Long_Bound[1],
                           (Long_Bound[1]-Long_Bound[0])/4), 
                 linewidth=.75, labels=[0, 0, 0, 1], color='0.8')
-x, y = m(lat,long)
+x, y = m(long, lat)
 m.scatter(x,y,3,marker='o',color='k')
 
 plt.title('Point Locations')
