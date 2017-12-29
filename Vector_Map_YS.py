@@ -21,7 +21,6 @@ Wx = 0.0865
 Wy = 0.1771
 Wz = -0.2173
 W = .30*(np.pi/180)*10**-6 # Make sure to covert deg/myr to rad/yr
-#W = 9.6*10**-9
 
 # Constants
 ERad = 6371*10**6
@@ -29,8 +28,6 @@ ERad = 6371*10**6
 # Convert to spherical coordinates
 PoleLatRad = np.arctan(Wz/np.sqrt(Wx**2+Wy**2))
 PoleLongRad = np.arctan2(Wy,Wx)
-#PoleLatRad = 48*(np.pi/180)
-#PoleLongRad = -116*(np.pi/180)
 
 # Read in csv
 AllData = pandas.read_csv(InData)
@@ -43,7 +40,7 @@ VnPole = []
 VeTotal = []
 VnTotal = []
 
-#Calculate new poles
+#Calculate new velocities
 for i in range(len(AllData['Longitude'].values)):
     PointLatRad = AllData['Latitude'].values[i]*(np.pi/180)
     PointLongRad = AllData['Longitude'].values[i]*(np.pi/180)
@@ -61,10 +58,10 @@ for i in range(len(AllData['Longitude'].values)):
     
 # Set up figure and background
 m = Basemap(projection='merc',
-            llcrnrlat=40,
+            llcrnrlat=41,
             urcrnrlat=47,
-            llcrnrlon=-121,
-            urcrnrlon=-109,
+            llcrnrlon=-117,
+            urcrnrlon=-108,
             lat_ts=45,
             resolution='i')
 
@@ -82,17 +79,17 @@ m.drawmeridians(np.arange(-124.,-105.,2.), linewidth=.25,
 #m.drawmapboundary(fill_color='white', color='0.8')
 #x,y = m(AllData['Longitude'].values,AllData['Latitude'].values)
 #m.scatter(x,y,1,marker='o',color='k')
-#m.quiver(AllData['Longitude'].values,AllData['Latitude'].values,
-#         AllData['Ve'].values,AllData['Vn'].values,
-#         latlon=True) # Plot velocities
-#m.quiver(AllData['Longitude'].values,AllData['Latitude'].values,
-#         AllData['VeTotal'].values,AllData['VnTotal'].values,
-#         latlon=True, color='b') # Plot calculated velocities
+m.quiver(AllData['Longitude'].values,AllData['Latitude'].values,
+         AllData['Ve'].values,AllData['Vn'].values,
+         latlon=True, color='k',
+         label='NAM Reference Frame') # Plot velocities
 m.quiver(AllData['Longitude'].values,AllData['Latitude'].values,
          VeTotal,VnTotal,
-         latlon=True, color='r') # Plot calculated velocities
+         latlon=True, color='r',
+         label='SRP Reference Frame') # Plot calculated velocities
 plt.title('GPS Velocities')
 plt.tight_layout()
+plt.legend(loc='lower left')
 
 plt.savefig(OutPlot)
 
