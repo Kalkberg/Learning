@@ -40,6 +40,8 @@ plotting.py - Learned how to make and save basic plots to PDF format.
 
 Point_Map.py - Plots points on a map using basemap
 
+Poll_Hist.py - Creates histograms of polling data
+
 PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data.
 
 SBAS_Rename.py - Helper script to rename GMT5SAR files for SBAS after making a stack of interferograms.
