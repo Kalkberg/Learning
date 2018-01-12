@@ -17,15 +17,40 @@ import cartopy.io.shapereader as shpreader
 #Read data
 Ramen = pandas.read_csv('Ramen_Ratings.csv')
 
-# Calculate min and max values for color bar
+# Calculate average ranking by country
+NCountries
 stars = np.array([])
+chicken = np.array([])
+beef = np.array([])
+fish = np.array([])
+shrimp = np.array([])
+pork = np.array([])
 for ramencountry in Ramen['Country'].unique():
     stars = np.append(stars,np.mean(Ramen[Ramen['Country'] == ramencountry]['Stars']))
+    chicken = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Chicken'))]['Stars']))
+    beef = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Beef'))]['Stars']))
+    fish = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Fish'))]['Stars']))
+    shrimp = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Shrimp'))]['Stars']))
+    pork = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Pork'))]['Stars']))
+    
 
+# Calculate average flavor rankings by country
+chicken = np.array([])
+for ramencountry in Ramen['Country'].unique():
+    stars = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Chicken'))]['Stars']))
+
+
+# Create color bar
 cmap = plt.get_cmap('viridis')
 norm = mpl.colors.Normalize(vmin=0, vmax=5)
 
-
+#%% Create map
 # Load shapefiles
 CountriesShape = shpreader.natural_earth(resolution='110m',
                     category='cultural', name='admin_0_countries') 
@@ -76,5 +101,15 @@ cb.set_label('Mean Stars', labelpad=-55, fontsize=14, fontweight='bold')
 plt.tight_layout()
 plt.title('World Ramen Ratings', y=.95, fontsize=14, fontweight='bold')
 plt.savefig('Ramen_Map.pdf')
+plt.close()
 
 #np.mean(Ramen[Ramen['Variety'].str.contains('Chicken')]['Stars'])
+
+#%% Create plots
+# Sort countries by ranking
+a=np.array([Ramen['Country'].unique(),stars])
+a=a[:,a[1,:].argsort()]
+plt.plot(a[1,:],range(len(a[1,:])),'ok')
+
+
+
