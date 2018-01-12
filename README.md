@@ -10,6 +10,8 @@ clicker.py - Sends a left click comand at a given interval on set keypress
 
 ColorRamp.py - Learned how to make custom color ramps. Code mainly sourced from StackOverflow answer linked in code.
 
+Country_Poll.py - Make plots from the ramen ranker database. Uses cartopy library to color countries by values extracted from the database.
+
 extract_sar.py - Takes ENVI or ERS SAR data obtained from WinSAR, extracts, and renames files for use in WIN5SAR.
 
 FTP_Download.py - Simple script to browse an FTP website, and download some files.
@@ -34,6 +36,8 @@ netCDF_Plot.py - Plots netCDF data. Currently configured to plot dynamic topogra
 
 pdf_writer.py - Learned how to make a table from a bunch of data in LaTeX and ouput it to a PDF.
 
+panda_plot.py - Simple plots using panas and seaborn from csv files
+
 Plate_Flexure.py - Attempts to constrain half width of plate flexure caused by Yellowstone Hotspot.
 
 plotting.py - Learned how to make and save basic plots to PDF format.
@@ -41,6 +45,8 @@ plotting.py - Learned how to make and save basic plots to PDF format.
 Point_Map.py - Plots points on a map using basemap
 
 Poll_Hist.py - Creates histograms of polling data
+
+Poll_Hist2.py - Creates histograms of polling data, but scripted for a different dataset.
 
 PTBAxes.py - obtain P, T, and B axes orientations from strike, dip and rake data.
 
