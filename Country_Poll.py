@@ -76,3 +76,5 @@ cb.set_label('Mean Stars', labelpad=-55, fontsize=14, fontweight='bold')
 plt.tight_layout()
 plt.title('World Ramen Ratings', y=.95, fontsize=14, fontweight='bold')
 plt.savefig('Ramen_Map.pdf')
+
+#np.mean(Ramen[Ramen['Variety'].str.contains('Chicken')]['Stars'])
