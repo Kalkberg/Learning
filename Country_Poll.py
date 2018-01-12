@@ -18,26 +18,41 @@ import cartopy.io.shapereader as shpreader
 Ramen = pandas.read_csv('Ramen_Ratings.csv')
 
 # Calculate average ranking by country
-NCountries
 stars = np.array([])
-chicken = np.array([])
-beef = np.array([])
-fish = np.array([])
-shrimp = np.array([])
-pork = np.array([])
 for ramencountry in Ramen['Country'].unique():
     stars = np.append(stars,np.mean(Ramen[Ramen['Country'] == ramencountry]['Stars']))
-    chicken = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
-                                          (Ramen['Variety'].str.contains('Chicken'))]['Stars']))
-    beef = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
-                                          (Ramen['Variety'].str.contains('Beef'))]['Stars']))
-    fish = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
-                                          (Ramen['Variety'].str.contains('Fish'))]['Stars']))
-    shrimp = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
-                                          (Ramen['Variety'].str.contains('Shrimp'))]['Stars']))
-    pork = np.append(stars,np.mean(Ramen[(Ramen['Country'] == ramencountry)&
-                                          (Ramen['Variety'].str.contains('Pork'))]['Stars']))
-    
+
+# Sort countries by ranking
+CountryAvg=np.array([Ramen['Country'].unique(),stars])
+CountryAvg=CountryAvg[:,CountryAvg[1,:].argsort()]
+
+# Calculate averages by flavor, using country indexing from above
+chicken = np.array([[],[]])
+beef = np.array([[],[]])
+fish = np.array([[],[]])
+shrimp = np.array([[],[]])
+pork = np.array([[],[]])
+mushroom = np.array([[],[]])
+for ramencountry in Ramen['Country'].unique():
+    index = np.argwhere(CountryAvg[0]==ramencountry)[0,0]    
+    chicken = np.append(chicken,[[np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Chicken'))]['Stars'])],
+                                [index]],axis=1)
+    beef = np.append(beef,[[np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Beef'))]['Stars'])],
+                                [index]],axis=1)
+    fish = np.append(fish,[[np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Fish'))]['Stars'])],
+                                [index]],axis=1)
+    shrimp = np.append(shrimp,[[np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Shrimp'))]['Stars'])],
+                                [index]],axis=1)
+    pork = np.append(pork,[[np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Pork'))]['Stars'])],
+                                [index]],axis=1)
+    mushroom = np.append(mushroom,[[np.mean(Ramen[(Ramen['Country'] == ramencountry)&
+                                          (Ramen['Variety'].str.contains('Mushroom'))]['Stars'])],
+                                [index]],axis=1)
 
 # Calculate average flavor rankings by country
 chicken = np.array([])
@@ -106,10 +121,23 @@ plt.close()
 #np.mean(Ramen[Ramen['Variety'].str.contains('Chicken')]['Stars'])
 
 #%% Create plots
-# Sort countries by ranking
-a=np.array([Ramen['Country'].unique(),stars])
-a=a[:,a[1,:].argsort()]
-plt.plot(a[1,:],range(len(a[1,:])),'ok')
+plt.figure(num=2, figsize=(2, 10), dpi=300, facecolor='w', edgecolor='k')
+plt.xlim([0,5.5])
+plt.xticks([1,5])
+plt.yticks(np.arange(len(CountryAvg[0])),CountryAvg[0])
 
+# Sort countries by ranking
+plt.plot(beef[0],beef[1],'or')
+#plt.plot(chicken[0],chicken[1],'o',color='orange')
+plt.plot(pork[0],pork[1],'o',color='pink')
+plt.plot(fish[0],fish[1],'ob')
+plt.plot(fish[0],fish[1],'oc')
+plt.plot(mushroom[0],mushroom[1],'o',color='brown')
+plt.scatter(CountryAvg[1,:],range(len(CountryAvg[1,:])),
+            c=CountryAvg[1,:],vmin=0,vmax=5,s=35,cmap=cmap)
+plt.tight_layout()
+plt.savefig('Ramen_Plot.pdf')
+plt.close()
+        
 
 
