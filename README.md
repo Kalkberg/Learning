@@ -6,6 +6,8 @@ args_parser.py - Learned how to parse input arguments.
 
 batch_project_raster.py - ArcPY document for batch projection of images in a set directory
 
+beachball_map.py - Reads in focal mechanism solutions and plots on a map
+
 clicker.py - Sends a left click comand at a given interval on set keypress
 
 ColorRamp.py - Learned how to make custom color ramps. Code mainly sourced from StackOverflow answer linked in code.
