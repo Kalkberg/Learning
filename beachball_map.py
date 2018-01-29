@@ -6,58 +6,60 @@ Set up for yellowstone area.
 
 @author: Kalkberg
 """
-import pandas
-from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
 import numpy as np
-from obspy.imaging.beachball import beachball
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+import pandas
+from obspy.imaging.beachball import beach
+
 
 # File Names
-InData ='Yellowstone_Harvard_CMTs.csv'
-OutPlot = 'Yellowstone_CMTs.pdf'
+InData1 ='Yellowstone_Harvard_CMTs.csv'
+InData2 = 'All_Best_Quakes_gt4.csv'
+OutPlot = 'Yellowstone_CMTs3.pdf'
 
 # Read data
-CMTs  = pandas.read_csv(InData)
+CMTs1  = pandas.read_csv(InData1)
+CMTs2  = pandas.read_csv(InData2)
 
-NPs = CMTs[['str1','dip1','rake1']].as_matrix()
+focmecs1 = CMTs1[['str1','dip1','rake1']].as_matrix().tolist()
+focmecs2 = CMTs2[['Strike','DP','Rak']].as_matrix().tolist()
 
-Locs = CMTs[['lon','lat']].as_matrix()
+lons1 = CMTs1[['lon']].as_matrix().squeeze(1).tolist()
+lats1 = CMTs1[['lat']].as_matrix().squeeze(1).tolist()
+lons2 = CMTs2[['Long']].as_matrix().squeeze(1).tolist()
+lats2 = CMTs2[['Lat']].as_matrix().squeeze(1).tolist()
 
-# Set up figure and background
+# Set up figures and background
 m = Basemap(projection='merc',
             llcrnrlat=41,
             urcrnrlat=47,
             llcrnrlon=-117,
             urcrnrlon=-108,
             lat_ts=45,
-            resolution='i')
+            resolution='h')
 
-m.shadedrelief()
-#m.etopo()
-#m.warpimage()
-#m.drawcoastlines(linewidth=0.5, color='0.8')
-m.drawcountries(linewidth=0.5, linestyle='solid', color='1')
 m.drawstates(linewidth=0.5, linestyle='solid', color='1')
 m.drawparallels(np.arange(40.,51.,2.), linewidth=.25, 
                 labels=[1, 1, 0, 0], color='1')
 m.drawmeridians(np.arange(-124.,-105.,2.), linewidth=.25, 
                 labels=[0, 0, 0, 1], color='1')
-#m.readshapefile('qfaults','qfaults', color='0.2') # Plot a shape file (qfaults)
-#m.drawmapboundary(fill_color='white', color='0.8')
-#x,y = m(AllData['Longitude'].values,AllData['Latitude'].values)
-#m.scatter(x,y,1,marker='o',color='k')
+#m.shadedrelief()
 
-ax = plt.gca() # get axis
-
-# Plot beachballs
-for i in range(len(NPs[1])):
-    x,y = m(Locs[i][0],Locs[i][1])
-    beach = beachball(NPs[i], xy=(x,y), width=100)
-    ax.add_collection(beach)
-
-plt.title('GPS Velocities')
+# Add beachballs
+ax = plt.gca()
+x1, y1 = m(lons1, lats1)
+for i in range(len(focmecs1)):
+    b = beach(focmecs1[i], xy=(x1[i], y1[i]), width=25000, linewidth=1)
+    b.set_zorder(10)
+    ax.add_collection(b)
+    
+x2, y2 = m(lons2, lats2)
+for i in range(len(focmecs2)):
+    b = beach(focmecs2[i], xy=(x2[i], y2[i]), width=25000, linewidth=1, facecolor='g')
+    b.set_zorder(10)
+    ax.add_collection(b)
+    
+#plt.show()
 plt.tight_layout()
-#plt.legend(loc='lower left')
-
 plt.savefig(OutPlot)
-
