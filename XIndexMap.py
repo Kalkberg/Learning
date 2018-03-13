@@ -20,6 +20,7 @@ import requests
 import yaml
 import pandas as pd
 import cartopy.io.shapereader as shpreader
+import shapefile
 
 from bokeh.io import curdoc
 from bokeh.layouts import row, widgetbox
@@ -56,6 +57,18 @@ from bokeh.models import (
 #    name=county_names,
 #    rate=county_rates,
 #))
+
+
+CountriesShape = shpreader.natural_earth(resolution='110m',
+                    category='cultural', name='admin_0_countries') 
+CountryShapes = shapefile.Reader(CountriesShape).shapes()
+
+
+
+for country in CountryShapes:
+    for point in CountryShapes[country]:
+        x = CountryShapes[country].points[point][0]
+        y = CountryShapes[country].points[point][1]
 
 
 # Get json data for countries and put into data frame
