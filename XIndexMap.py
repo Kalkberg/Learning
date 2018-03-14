@@ -62,13 +62,16 @@ from bokeh.models import (
 CountriesShape = shpreader.natural_earth(resolution='110m',
                     category='cultural', name='admin_0_countries') 
 CountryShapes = shapefile.Reader(CountriesShape).shapes()
+CountryData = shapefile.Reader(CountriesShape).records()
 
-
-
-for country in CountryShapes:
-    for point in CountryShapes[country]:
-        x = CountryShapes[country].points[point][0]
-        y = CountryShapes[country].points[point][1]
+x = [ [] for _ in range(len(CountryShapes))]
+y = [ [] for _ in range(len(CountryShapes))]
+name = [ [] for _ in range(len(CountryShapes))]
+for country in range(len(CountryShapes)):
+    for point in range(len(CountryShapes[country].points)):
+        x[country].append(CountryShapes[country].points[point][0])
+        y[country].append(CountryShapes[country].points[point][1])
+        name[country].append(CountryData[country][3])
 
 
 # Get json data for countries and put into data frame
