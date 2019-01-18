@@ -21,7 +21,6 @@ import yaml
 import pandas as pd
 import cartopy.io.shapereader as shpreader
 import shapefile
-from descartes import PolygonPatch
 
 from bokeh.io import curdoc
 from bokeh.layouts import row, widgetbox
@@ -101,17 +100,6 @@ plot.patches('x', 'y', source=source,
           fill_color={'field': 'rate', 'transform': color_mapper},
           fill_alpha=0.7, line_color="white", line_width=0.5)
 
-
-
-## JSON plotting code snippet
-#import matplotlib.pyplot as plt 
-#from descartes import PolygonPatch
-#BLUE = '#6699cc'
-#fig = plt.figure() 
-#ax = fig.gca() 
-#ax.add_patch(PolygonPatch(poly, fc=BLUE, ec=BLUE, alpha=0.5, zorder=2 ))
-#ax.axis('scaled')
-#plt.show()
 
 ## Set up plot
 #TOOLS = "pan,wheel_zoom,reset,hover,save"
