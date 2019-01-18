@@ -15,7 +15,7 @@ from obspy.imaging.beachball import beach
 
 # File Names
 InData1 ='Yellowstone_Harvard_CMTs.csv'
-InData2 = 'All_Best_Quakes_gt4.csv'
+InData2 = 'SLU_EQ_Data.csv'
 OutPlot = 'Yellowstone_CMTs3.pdf'
 
 # Read data
@@ -23,11 +23,11 @@ CMTs1  = pandas.read_csv(InData1)
 CMTs2  = pandas.read_csv(InData2)
 
 focmecs1 = CMTs1[['str1','dip1','rake1']].as_matrix().tolist()
-focmecs2 = CMTs2[['Strike','DP','Rak']].as_matrix().tolist()
+focmecs2 = CMTs2.loc[CMTs2['Mw'] >4, ['Stk','Dip','Rake']].as_matrix().tolist()
 
 lons1 = CMTs1[['lon']].as_matrix().squeeze(1).tolist()
 lats1 = CMTs1[['lat']].as_matrix().squeeze(1).tolist()
-lons2 = CMTs2[['Long']].as_matrix().squeeze(1).tolist()
+lons2 = CMTs2[['Lon']].as_matrix().squeeze(1).tolist()
 lats2 = CMTs2[['Lat']].as_matrix().squeeze(1).tolist()
 
 # Set up figures and background
