@@ -11,8 +11,8 @@ Requires:
 """
 import cv2
 
-video = "indian.mp4"
-n = 30
+video = "Trench.mp4"
+n = 47
 blurthresh = 100 # Threshold for determining if image is blurry, adjust as needed
 vidcap = cv2.VideoCapture(video)
 
