@@ -16,7 +16,7 @@ api = SentinelAPI(user='s5pguest', password='s5pguest', api_url='https://s5phub.
 # Go to https://arthur-e.github.io/Wicket/sandbox-gmaps3.html and draw one out
 AOI = 'POLYGON((-13.339845538139361 60.12751683206621,5.029295086860639 60.12751683206621,5.029295086860639 48.88959322671285,-13.339845538139361 48.88959322671285,-13.339845538139361 60.12751683206621))'
 
-# Date
+# Date range for data ingestion
 startdate = '20191101'
 enddate = '20200330'
 frequency = 7 # every nth day in date range will be downloaded, in this case one every 7 days
@@ -68,9 +68,9 @@ for image in images:
     api.download(image)
 
 # change extension from zip to nc - nc is actual extension, 
-# but sentinelsat makes it zip in a hard coded error
+# but sentinelsat makes it a zip in a hard coded error
 
-imgFile = glob.glob('S5P*') # search for Sentinel 5 files
+imgFile = glob.glob('S5P*') # search for Sentinel 5 files in directory
 imgFile = [i for i in imgFile if '.zip' in i[-4:len(i)]] # only accept zips
 
 for file in imgFile:
